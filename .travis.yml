@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  - "14"
+
+services:
+  - docker
+
+before_install:
+- docker build -t mercury/client .
+- docker ps -a
+- docker run mercury/client /bin/sh -c "yarn test"
