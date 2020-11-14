@@ -29,7 +29,7 @@ interface UserContact {
 interface Props {
   contact: UserContact;
   handleClickContact: (user: any) => void;
-  handleContactDeleteEvent: () => void;
+  handleContactDeleteEvent: (contact: any) => void;
 }
 
 const Contact: React.FC<Props> = ({
@@ -63,7 +63,7 @@ const Contact: React.FC<Props> = ({
         toaster.danger(error);
       }
     }
-    handleContactDeleteEvent();
+    handleContactDeleteEvent(contact);
   };
 
   return (

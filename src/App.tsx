@@ -1,4 +1,4 @@
-import React, { useEffect, createRef, Ref } from "react";
+import React, { useEffect, createRef, Ref, useState } from "react";
 import "./App.css";
 
 import Sidebar from "./components/Sidebar";
@@ -23,19 +23,32 @@ export const App: React.FC = () => {
 
   const dispatch = useDispatch();
 
+  const [currentChatContact, setCurrentChatContact] = useState({
+    username: "",
+    uuid: "",
+  });
+
   const loggedIn = useSelector((state: RootState) => state.isLoggedIn);
 
   const messageViewRef: Ref<MessageViewRefObject> = createRef();
   const contactListRef: Ref<ContactListRefObject> = createRef();
 
   const handleNewMessageEvent = (data: any) => {
-    console.log("new_message");
     contactListRef.current?.fetchContacts();
   };
 
   const handleLoggedInEvent = (user: any) => {
-    console.log("handle_logger_in_user_event");
     contactListRef.current?.fetchContacts();
+  };
+
+  const handleContactDeletion = ({ contact }: any) => {
+    contactListRef.current?.fetchContacts();
+    if (currentChatContact.uuid === contact) {
+      messageViewRef.current?.updateViewUser({
+        username: "",
+        uuid: "",
+      });
+    }
   };
 
   useEffect(() => {
@@ -50,6 +63,7 @@ export const App: React.FC = () => {
       logUserIn();
       dispatch(setLoggedIn());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, contactListRef]);
 
   return (
@@ -67,9 +81,11 @@ export const App: React.FC = () => {
       </Dialog>
       <Sidebar
         contactListRef={contactListRef}
-        handleClickContact={(user: any) =>
-          messageViewRef.current?.updateViewUser(user)
-        }
+        handleContactDeletion={handleContactDeletion}
+        handleClickContact={(contact: any) => {
+          setCurrentChatContact(contact);
+          messageViewRef.current?.updateViewUser(contact);
+        }}
       />
       <MessageView
         socket={socket}
