@@ -6,9 +6,13 @@ import MessageBox from "./MessageBox";
 import MessageList from "./MessageList";
 import ChatHeader from "./ChatHeader";
 
+import { MessageListRefObject } from "./MessageList";
+
 interface Props {
   handleNewMessageEvent: (message: any) => void;
   socket: SocketIOClient.Socket;
+  handleSendMessage: (message: UnsentMessage) => void;
+  messageListRef: Ref<MessageListRefObject>;
 }
 
 export interface MessageViewRefObject {
@@ -18,7 +22,10 @@ export interface MessageViewRefObject {
 const MessageView: React.ForwardRefRenderFunction<
   MessageViewRefObject,
   Props
-> = ({ handleNewMessageEvent, socket }: Props, ref: Ref<MessageViewRefObject>) => {
+> = (
+  { handleNewMessageEvent, socket, handleSendMessage, messageListRef }: Props,
+  ref: Ref<MessageViewRefObject>
+) => {
   const [currentChatUser, setCurrentChatUser] = useState({
     username: "",
     uuid: "",
@@ -45,8 +52,12 @@ const MessageView: React.ForwardRefRenderFunction<
   return (
     <Pane display="flex" flexDirection="column" id="message_view">
       <ChatHeader contact={currentChatUser} />
-      <MessageList socket={socket} handleNewMessageEvent={handleNewMessageEvent} />
-      <MessageBox socket={socket} />
+      <MessageList
+        ref={messageListRef}
+        socket={socket}
+        handleNewMessageEvent={handleNewMessageEvent}
+      />
+      <MessageBox handleSendMessage={handleSendMessage} socket={socket} />
     </Pane>
   );
 };
