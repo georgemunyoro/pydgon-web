@@ -52,7 +52,6 @@ const ContactList: React.ForwardRefRenderFunction<
 
   async function fetchContacts(): Promise<void> {
     if (localStorage.hasOwnProperty("jwt")) {
-      setFetchingContacts(true);
       const res = await Api.getContacts(localStorage.getItem("jwt"));
       setContacts(res.data.data.contacts);
       setFetchingContacts(false);
@@ -66,11 +65,6 @@ const ContactList: React.ForwardRefRenderFunction<
   useEffect(() => {
     if (localStorage.hasOwnProperty("jwt")) fetchContacts();
   }, []);
-
-  const deleteContact = (contact: any) => {
-    handleContactDeletion(contact);
-    fetchContacts();
-  };
 
   return (
     <Table>
@@ -134,7 +128,7 @@ const ContactList: React.ForwardRefRenderFunction<
             .map((contact: any) => (
               <Contact
                 handleClickContact={(user: any) => handleClickContact(user)}
-                handleContactDeleteEvent={() => deleteContact}
+                handleContactDeleteEvent={handleContactDeletion}
                 key={contact.id}
                 contact={contact}
               />
