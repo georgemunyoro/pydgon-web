@@ -14,7 +14,10 @@ interface Props {
   socket: SocketIOClient.Socket;
 }
 
-const MessageList: React.FC<Props> = ({ handleNewMessageEvent, socket }: Props) => {
+const MessageList: React.FC<Props> = ({
+  handleNewMessageEvent,
+  socket,
+}: Props) => {
   const loggedInUser = useSelector((state: RootState) => state.user.uuid);
   const chat_uuid = useSelector(
     (state: RootState) => state.currentChatUser.uuid
@@ -42,7 +45,7 @@ const MessageList: React.FC<Props> = ({ handleNewMessageEvent, socket }: Props) 
     }
 
     function listenForIncomingMessages() {
-      console.log("el")
+      console.log("el");
       if (socket != null) {
         socket.on("new-message", (data: any) => {
           if (loggedInUser != null) {
