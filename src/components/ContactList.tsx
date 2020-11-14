@@ -28,6 +28,7 @@ import Api from "../api";
 
 interface Props {
   handleClickContact: Function;
+  handleContactDeletion: (contact: any) => void;
 }
 
 export interface ContactListRefObject {
@@ -37,7 +38,10 @@ export interface ContactListRefObject {
 const ContactList: React.ForwardRefRenderFunction<
   ContactListRefObject,
   Props
-> = ({ handleClickContact }, ref: Ref<ContactListRefObject>) => {
+> = (
+  { handleClickContact, handleContactDeletion },
+  ref: Ref<ContactListRefObject>
+) => {
   const [contacts, setContacts] = useState([]);
   const [contactFilter, setContactFilter] = useState("");
   const [showAddContactDialog, setShowAddContactDialog] = useState(false);
@@ -48,8 +52,10 @@ const ContactList: React.ForwardRefRenderFunction<
 
   async function fetchContacts(): Promise<void> {
     if (localStorage.hasOwnProperty("jwt")) {
+      setFetchingContacts(true);
       const res = await Api.getContacts(localStorage.getItem("jwt"));
       setContacts(res.data.data.contacts);
+      setFetchingContacts(false);
     }
   }
 
@@ -59,8 +65,12 @@ const ContactList: React.ForwardRefRenderFunction<
 
   useEffect(() => {
     if (localStorage.hasOwnProperty("jwt")) fetchContacts();
-    setFetchingContacts(false);
   }, []);
+
+  const deleteContact = (contact: any) => {
+    handleContactDeletion(contact);
+    fetchContacts();
+  };
 
   return (
     <Table>
@@ -118,16 +128,22 @@ const ContactList: React.ForwardRefRenderFunction<
             <Spinner margin="auto" marginTop="25%" />
           </Pane>
         )}
-        {contacts
-          ?.filter((contact: any) => contact.name.includes(contactFilter))
-          .map((contact: any) => (
-            <Contact
-              handleClickContact={(user: any) => handleClickContact(user)}
-              handleContactDeleteEvent={fetchContacts}
-              key={contact.id}
-              contact={contact}
-            />
-          ))}
+        {!fetchingContacts &&
+          contacts
+            ?.filter((contact: any) => contact.name.includes(contactFilter))
+            .map((contact: any) => (
+              <Contact
+                handleClickContact={(user: any) => handleClickContact(user)}
+                handleContactDeleteEvent={() => deleteContact}
+                key={contact.id}
+                contact={contact}
+              />
+            ))}
+        {contacts?.length === 0 && !fetchingContacts && (
+          <Pane marginTop="25%" width="100%" textAlign="center">
+            <Text>You have no contacts</Text>
+          </Pane>
+        )}
       </Table.Body>
     </Table>
   );

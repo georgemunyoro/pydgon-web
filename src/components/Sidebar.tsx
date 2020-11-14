@@ -8,9 +8,10 @@ import { ContactListRefObject } from "./ContactList";
 interface Props {
   handleClickContact: Function;
   contactListRef: Ref<ContactListRefObject>;
+  handleContactDeletion: (contact: any) => void;
 }
 
-const Sidebar: React.FC<Props> = ({ handleClickContact, contactListRef }) => {
+const Sidebar: React.FC<Props> = ({ handleClickContact, contactListRef, handleContactDeletion }) => {
   return (
     <div id="sidebar">
       <Pane
@@ -21,6 +22,7 @@ const Sidebar: React.FC<Props> = ({ handleClickContact, contactListRef }) => {
       >
         <ContactList
           ref={contactListRef}
+          handleContactDeletion={handleContactDeletion}
           handleClickContact={(user: any) => handleClickContact(user)}
         />
       </Pane>

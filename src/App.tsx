@@ -29,14 +29,20 @@ export const App: React.FC = () => {
   const contactListRef: Ref<ContactListRefObject> = createRef();
 
   const handleNewMessageEvent = (data: any) => {
-    console.log("new_message");
     contactListRef.current?.fetchContacts();
   };
 
   const handleLoggedInEvent = (user: any) => {
-    console.log("handle_logger_in_user_event");
     contactListRef.current?.fetchContacts();
   };
+
+  const handleContactDeletion = (user: any) => {
+    console.log(user)
+    messageViewRef.current?.updateViewUser({
+      username: "",
+      uuid: "",
+    });
+  }
 
   useEffect(() => {
     async function logUserIn() {
@@ -50,6 +56,7 @@ export const App: React.FC = () => {
       logUserIn();
       dispatch(setLoggedIn());
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, contactListRef]);
 
   return (
@@ -67,6 +74,7 @@ export const App: React.FC = () => {
       </Dialog>
       <Sidebar
         contactListRef={contactListRef}
+        handleContactDeletion={handleContactDeletion}
         handleClickContact={(user: any) =>
           messageViewRef.current?.updateViewUser(user)
         }
