@@ -1,4 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  Ref,
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+} from "react";
 
 import { Pane } from "evergreen-ui";
 
@@ -14,18 +21,52 @@ interface Props {
   socket: SocketIOClient.Socket;
 }
 
-const MessageList: React.FC<Props> = ({ handleNewMessageEvent, socket }: Props) => {
+interface MessageModel {
+  id?: number;
+  content?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  sender?: string;
+  recepient?: string;
+}
+
+export interface MessageListRefObject {
+  addSentMessage: (message: UnsentMessage) => void;
+}
+
+const MessageList: React.ForwardRefRenderFunction<
+  MessageListRefObject,
+  Props
+> = (
+  { handleNewMessageEvent, socket }: Props,
+  ref: Ref<MessageListRefObject>
+) => {
   const loggedInUser = useSelector((state: RootState) => state.user.uuid);
   const chat_uuid = useSelector(
     (state: RootState) => state.currentChatUser.uuid
   );
 
-  const [messages, setMessages] = useState([{}]);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const [messages, setMessages] = useState<MessageModel[]>([{}]);
+  const [socketSet, setSocketSet] = useState(false);
 
   function updateScroll() {
-    let messageList = document.getElementById("messageList");
-    if (messageList != null) messageList.scrollTop = messageList.scrollHeight;
+    if (listRef != null) {
+      if (listRef.current != null) {
+        listRef.current.scrollTop = listRef.current?.scrollHeight;
+      }
+    }
   }
+
+  function addSentMessage(message: UnsentMessage) {
+    setMessages((messages: any) => [...messages, message]);
+    updateScroll();
+  }
+
+  useImperativeHandle(ref, () => ({
+    addSentMessage,
+  }));
 
   useEffect(() => {
     async function fetchChatMessages() {
@@ -42,24 +83,34 @@ const MessageList: React.FC<Props> = ({ handleNewMessageEvent, socket }: Props) 
     }
 
     function listenForIncomingMessages() {
-      console.log("el")
-      if (socket != null) {
-        socket.on("new-message", (data: any) => {
+      if (socket != null && !socketSet) {
+        socket.on(loggedInUser + "-new-message", (data: any) => {
           if (loggedInUser != null) {
-            if (data.sender !== loggedInUser) handleNewMessageEvent(data);
+            if (data.sender !== loggedInUser) {
+              handleNewMessageEvent(data);
+            }
+            if (data.sender !== chat_uuid) return;
           }
           setMessages((messages: any) => [...messages, data]);
           updateScroll();
         });
+        setSocketSet(true);
       }
     }
 
     listenForIncomingMessages();
     fetchChatMessages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chat_uuid, loggedInUser, socket, handleNewMessageEvent]);
 
   return (
-    <Pane flexGrow={1} overflowX="hidden" overflowY="scroll" id={"messageList"}>
+    <Pane
+      ref={listRef}
+      flexGrow={1}
+      overflowX="hidden"
+      overflowY="scroll"
+      id={"messageList"}
+    >
       {messages.map((message: any) => (
         <Message
           key={message.id}
@@ -71,4 +122,4 @@ const MessageList: React.FC<Props> = ({ handleNewMessageEvent, socket }: Props) 
   );
 };
 
-export default MessageList;
+export default forwardRef(MessageList);
