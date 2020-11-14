@@ -7,9 +7,10 @@ import { RootState } from "../reducers";
 
 interface Props {
   socket: SocketIOClient.Socket;
+  handleSendMessage: (message: UnsentMessage) => void;
 }
 
-const MessageBox: React.FC<Props> = ({ socket }) => {
+const MessageBox: React.FC<Props> = ({ socket, handleSendMessage }) => {
   const [message, setMessage] = useState("");
 
   const userId = useSelector((state: RootState) => state.user.uuid);
@@ -19,14 +20,14 @@ const MessageBox: React.FC<Props> = ({ socket }) => {
 
   const sendMessage = () => {
     if (message.trim() === "") return;
-    if (socket != null) {
-      console.log(socket);
-      socket.emit("chat-message", {
+    if (socket != null && userId != null && currentChat != null) {
+      const messageObject: UnsentMessage = {
         sender: userId,
         recepient: currentChat,
         content: message,
-      });
-      console.log("SENT", message);
+      };
+      socket.emit("chat-message", messageObject);
+      handleSendMessage(messageObject);
       setMessage("");
     }
   };

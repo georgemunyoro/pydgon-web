@@ -4,6 +4,7 @@ import "./App.css";
 import Sidebar from "./components/Sidebar";
 import MessageView, { MessageViewRefObject } from "./components/MessageView";
 import { ContactListRefObject } from "./components/ContactList";
+import { MessageListRefObject } from "./components/MessageList";
 import LoginForm from "./components/LoginForm";
 
 import Api from "./api";
@@ -12,7 +13,7 @@ import { Dialog } from "evergreen-ui";
 
 import { RootState } from "./reducers/index";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoggedInUser, setLoggedIn, setSocket } from "./actions";
+import { setLoggedInUser, setLoggedIn } from "./actions";
 
 import io from "socket.io-client";
 
@@ -30,6 +31,7 @@ export const App: React.FC = () => {
 
   const loggedIn = useSelector((state: RootState) => state.isLoggedIn);
 
+  const messageListRef: Ref<MessageListRefObject> = createRef();
   const messageViewRef: Ref<MessageViewRefObject> = createRef();
   const contactListRef: Ref<ContactListRefObject> = createRef();
 
@@ -39,6 +41,12 @@ export const App: React.FC = () => {
 
   const handleLoggedInEvent = (user: any) => {
     contactListRef.current?.fetchContacts();
+  };
+
+  const handleSendMessage = (message: UnsentMessage) => {
+    if (message.recepient === currentChatContact.uuid) {
+      messageListRef.current?.addSentMessage(message);
+    }
   };
 
   const handleContactDeletion = ({ contact }: any) => {
@@ -89,6 +97,8 @@ export const App: React.FC = () => {
       />
       <MessageView
         socket={socket}
+        messageListRef={messageListRef}
+        handleSendMessage={handleSendMessage}
         handleNewMessageEvent={handleNewMessageEvent}
         ref={messageViewRef}
       />
