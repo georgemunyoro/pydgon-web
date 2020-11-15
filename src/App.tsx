@@ -142,6 +142,7 @@ export const App: React.FC = () => {
         <LoginForm handleLoggedInEvent={handleLoggedInEvent} />
       </Dialog>
       <Sidebar
+        socket={socket}
         contactListRef={contactListRef}
         handleContactDeletion={handleContactDeletion}
         handleClickContact={handleClickContact}

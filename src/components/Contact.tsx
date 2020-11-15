@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCurrentChat } from "../actions";
+import { RootState } from "../reducers";
 
 import {
   Avatar,
@@ -15,6 +16,7 @@ import {
   Dialog,
   Text,
   Badge,
+  Pill,
   toaster,
 } from "evergreen-ui";
 
@@ -24,23 +26,33 @@ interface UserContact {
   id: number;
   name: string;
   contact?: string;
+  unread?: number;
 }
 
 interface Props {
   contact: UserContact;
   handleClickContact: (user: any) => void;
   handleContactDeleteEvent: (contact: any) => void;
+  socket: SocketIOClient.Socket;
+  authenticatedUser: UserProfile;
 }
 
 const Contact: React.FC<Props> = ({
   contact,
   handleClickContact,
   handleContactDeleteEvent,
+  socket,
+  authenticatedUser,
 }) => {
   const dispatch = useDispatch();
 
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [unread, setUnread] = useState(0);
+
+  const currentChatUser = useSelector(
+    (state: RootState) => state.currentChatUser
+  );
 
   const handleContextMenuEvent = (event: any) => {
     event.preventDefault();
@@ -65,6 +77,17 @@ const Contact: React.FC<Props> = ({
     }
     handleContactDeleteEvent(contact);
   };
+
+  useEffect(() => {
+    socket.on(authenticatedUser.uuid + "-new-message", (message: any) => {
+      if (
+        message.sender === contact.contact &&
+        message.sender !== currentChatUser.uuid
+      ) {
+        setUnread((unread) => unread + 1);
+      }
+    });
+  }, []);
 
   return (
     <Popover
@@ -108,6 +131,7 @@ const Contact: React.FC<Props> = ({
             dispatch(
               setCurrentChat({ username: contact.name, uuid: contact.contact })
             );
+            setUnread(0);
             handleClickContact({
               username: contact.name,
               uuid: contact.contact,
@@ -118,6 +142,15 @@ const Contact: React.FC<Props> = ({
             <Avatar name={contact.name} size={50} />
           </Table.Cell>
           <Table.TextCell>{contact.name}</Table.TextCell>
+          <Table.Cell>
+            <Pill
+              marginLeft="auto"
+              color="green"
+              display={unread === 0 ? "none" : "block"}
+            >
+              {unread}
+            </Pill>
+          </Table.Cell>
         </Table.Row>
       </Pane>
     </Popover>

@@ -29,6 +29,7 @@ import Api from "../api";
 interface Props {
   handleClickContact: Function;
   handleContactDeletion: (contact: any) => void;
+  socket: SocketIOClient.Socket;
 }
 
 export interface ContactListRefObject {
@@ -39,7 +40,7 @@ const ContactList: React.ForwardRefRenderFunction<
   ContactListRefObject,
   Props
 > = (
-  { handleClickContact, handleContactDeletion },
+  { handleClickContact, handleContactDeletion, socket },
   ref: Ref<ContactListRefObject>
 ) => {
   const [contacts, setContacts] = useState([]);
@@ -128,6 +129,8 @@ const ContactList: React.ForwardRefRenderFunction<
             ?.filter((contact: any) => contact.name.includes(contactFilter))
             .map((contact: any) => (
               <Contact
+                authenticatedUser={user}
+                socket={socket}
                 handleClickContact={(user: any) => handleClickContact(user)}
                 handleContactDeleteEvent={handleContactDeletion}
                 key={contact.id}
