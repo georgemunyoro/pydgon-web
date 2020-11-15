@@ -44,7 +44,7 @@ export const App: React.FC = () => {
   };
 
   const handleNewMessageEvent = (data: any) => {
-    if (data.sender == currentChatContact.uuid)
+    if (data.sender === currentChatContact.uuid)
       messageListRef.current?.addReceivedMessage(data);
 
     contactListRef.current?.fetchContacts();

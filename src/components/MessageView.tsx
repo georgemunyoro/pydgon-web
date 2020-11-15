@@ -6,7 +6,7 @@ import React, {
   ChangeEventHandler,
 } from "react";
 
-import { Pane, Text } from "evergreen-ui";
+import { Pane, Text, Badge } from "evergreen-ui";
 
 import MessageBox from "./MessageBox";
 import MessageList from "./MessageList";
@@ -66,6 +66,9 @@ const MessageView: React.ForwardRefRenderFunction<
         <Text margin={10} size={600} textAlign="center">
           Welcome to Mercury
         </Text>
+        <Badge color="neutral" isSolid>
+          Beta
+        </Badge>
       </Pane>
     );
   }
