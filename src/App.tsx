@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoggedInUser, setLoggedIn } from "./actions";
 
 import io from "socket.io-client";
+import { ChatHeaderRefObject } from "./components/ChatHeader";
 
 const SOCKET_IO_URL = process.env.REACT_APP_SOCKET_IO_URL?.toString();
 
@@ -34,8 +35,18 @@ export const App: React.FC = () => {
   const messageListRef: Ref<MessageListRefObject> = createRef();
   const messageViewRef: Ref<MessageViewRefObject> = createRef();
   const contactListRef: Ref<ContactListRefObject> = createRef();
+  const chatHeaderRef: Ref<ChatHeaderRefObject> = createRef();
+
+  const handleClickContact = async (contact: any) => {
+    chatHeaderRef.current?.setOnline(false);
+    setCurrentChatContact(contact);
+    await messageViewRef.current?.updateViewUser(contact);
+  };
 
   const handleNewMessageEvent = (data: any) => {
+    if (data.sender == currentChatContact.uuid)
+      messageListRef.current?.addReceivedMessage(data);
+
     contactListRef.current?.fetchContacts();
   };
 
@@ -69,8 +80,25 @@ export const App: React.FC = () => {
     });
 
     socket.on(authenticatedUser.uuid + "-status-check", () => {
-      console.log("check");
       socket.emit("user-online", authenticatedUser);
+    });
+
+    socket.on("user-online", async (user: any) => {
+      if (
+        user.uuid !== authenticatedUser.uuid &&
+        user.uuid === currentChatContact.uuid
+      ) {
+        chatHeaderRef.current?.setOnline(true);
+      }
+    });
+
+    socket.on("user-offline", (user: any) => {
+      if (
+        user.uuid !== authenticatedUser.uuid &&
+        user.uuid === currentChatContact.uuid
+      ) {
+        chatHeaderRef.current?.setOnline(false);
+      }
     });
   };
 
@@ -84,6 +112,7 @@ export const App: React.FC = () => {
       setupSocketListeners(authenticatedUser);
     }
 
+    sessionStorage.clear();
     if (localStorage.getItem("jwt") !== null) {
       logUserIn();
       dispatch(setLoggedIn());
@@ -107,14 +136,11 @@ export const App: React.FC = () => {
       <Sidebar
         contactListRef={contactListRef}
         handleContactDeletion={handleContactDeletion}
-        handleClickContact={async (contact: any) => {
-          socket.emit("status-check", contact.uuid);
-          setCurrentChatContact(contact);
-          messageViewRef.current?.updateViewUser(contact);
-        }}
+        handleClickContact={handleClickContact}
       />
       <MessageView
         socket={socket}
+        chatHeaderRef={chatHeaderRef}
         messageListRef={messageListRef}
         handleSendMessage={handleSendMessage}
         handleNewMessageEvent={handleNewMessageEvent}

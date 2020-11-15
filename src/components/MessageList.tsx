@@ -33,6 +33,7 @@ interface MessageModel {
 
 export interface MessageListRefObject {
   addSentMessage: (message: UnsentMessage) => void;
+  addReceivedMessage: (message: any) => void;
 }
 
 const MessageList: React.ForwardRefRenderFunction<
@@ -68,8 +69,15 @@ const MessageList: React.ForwardRefRenderFunction<
     emitUserOnline();
   }
 
+  async function addReceivedMessage(message: any) {
+    await setMessages((messages: any) => [...messages, message]);
+    updateScroll();
+    emitUserOnline();
+  }
+
   useImperativeHandle(ref, () => ({
     addSentMessage,
+    addReceivedMessage,
   }));
 
   useEffect(() => {
@@ -80,6 +88,10 @@ const MessageList: React.ForwardRefRenderFunction<
           chat_uuid
         );
         setMessages(res.data.data.messages);
+        sessionStorage.setItem(
+          chat_uuid,
+          JSON.stringify(res.data.data.messages)
+        );
         updateScroll();
       } catch (error) {
         console.error(error);
@@ -87,17 +99,13 @@ const MessageList: React.ForwardRefRenderFunction<
     }
 
     function listenForIncomingMessages() {
-      if (socket != null && !socketSet) {
+      if (socket != null) {
+        if (socketSet) socket.removeAllListeners();
         socket.on(loggedInUser.uuid + "-new-message", (data: any) => {
           if (loggedInUser.uuid != null) {
             if (data.sender !== loggedInUser.uuid) {
               handleNewMessageEvent(data);
             }
-          }
-          if (data.sender === chat_uuid) {
-            console.log("MES", data, chat_uuid);
-            setMessages((messages: any) => [...messages, data]);
-            updateScroll();
           }
         });
         setSocketSet(true);
@@ -105,10 +113,18 @@ const MessageList: React.ForwardRefRenderFunction<
     }
 
     listenForIncomingMessages();
-    fetchChatMessages();
     emitUserOnline();
+    if (sessionStorage.getItem(chat_uuid) != null) {
+      const savedMessages = sessionStorage.getItem(chat_uuid);
+      if (savedMessages != null) {
+        setMessages(JSON.parse(savedMessages));
+      }
+      return;
+    }
+
+    fetchChatMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedInUser.uuid, socket, handleNewMessageEvent]);
+  }, [loggedInUser.uuid, socket, handleNewMessageEvent, chat_uuid]);
 
   return (
     <Pane

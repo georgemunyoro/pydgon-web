@@ -1,6 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+  Ref,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 
 import { Pane, Avatar, Text, Badge } from "evergreen-ui";
+
+export interface ChatHeaderRefObject {
+  setOnline: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 interface Props {
   contact: {
@@ -11,33 +21,19 @@ interface Props {
   authenticatedUser: UserProfile;
 }
 
-const ChatHeader: React.FC<Props> = ({
-  contact,
-  socket,
-  authenticatedUser,
-}) => {
+const ChatHeader: React.ForwardRefRenderFunction<ChatHeaderRefObject, Props> = (
+  { contact, socket, authenticatedUser }: Props,
+  ref: Ref<ChatHeaderRefObject>
+) => {
   const [online, setOnline] = useState(false);
 
-  useEffect(() => {
-    setOnline(false);
-    socket.on("user-online", (user: any) => {
-      console.log(authenticatedUser, user);
-      if (user.uuid !== authenticatedUser.uuid) {
-        if (user.uuid === contact.uuid) {
-          setOnline(true);
-        }
-      }
-    });
+  useImperativeHandle(ref, () => ({
+    setOnline,
+  }));
 
-    socket.on("user-offline", (user: any) => {
-      console.log(authenticatedUser, user);
-      if (user.uuid !== authenticatedUser.uuid) {
-        if (user.uuid === contact.uuid) {
-          setOnline(false);
-        }
-      }
-    });
-  }, []);
+  useEffect(() => {
+    socket.emit("status-check", contact.uuid);
+  }, [contact]);
 
   return (
     <Pane
@@ -59,4 +55,4 @@ const ChatHeader: React.FC<Props> = ({
   );
 };
 
-export default ChatHeader;
+export default forwardRef(ChatHeader);

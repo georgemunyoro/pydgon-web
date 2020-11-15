@@ -1,4 +1,10 @@
-import React, { useState, forwardRef, useImperativeHandle, Ref } from "react";
+import React, {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  Ref,
+  ChangeEventHandler,
+} from "react";
 
 import { Pane, Text } from "evergreen-ui";
 
@@ -7,12 +13,14 @@ import MessageList from "./MessageList";
 import ChatHeader from "./ChatHeader";
 
 import { MessageListRefObject } from "./MessageList";
+import { ChatHeaderRefObject } from "./ChatHeader";
 
 interface Props {
   handleNewMessageEvent: (message: any) => void;
   socket: SocketIOClient.Socket;
   handleSendMessage: (message: UnsentMessage) => void;
   messageListRef: Ref<MessageListRefObject>;
+  chatHeaderRef: Ref<ChatHeaderRefObject>;
 }
 
 export interface MessageViewRefObject {
@@ -24,7 +32,13 @@ const MessageView: React.ForwardRefRenderFunction<
   MessageViewRefObject,
   Props
 > = (
-  { handleNewMessageEvent, socket, handleSendMessage, messageListRef }: Props,
+  {
+    handleNewMessageEvent,
+    socket,
+    handleSendMessage,
+    messageListRef,
+    chatHeaderRef,
+  }: Props,
   ref: Ref<MessageViewRefObject>
 ) => {
   const [authenticatedUser, setAuthenticatedUser] = useState({});
@@ -61,6 +75,7 @@ const MessageView: React.ForwardRefRenderFunction<
       <ChatHeader
         authenticatedUser={authenticatedUser}
         socket={socket}
+        ref={chatHeaderRef}
         contact={currentChatUser}
       />
       <MessageList
