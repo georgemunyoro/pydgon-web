@@ -100,6 +100,14 @@ export const App: React.FC = () => {
         chatHeaderRef.current?.setOnline(false);
       }
     });
+
+    socket.on(authenticatedUser.uuid + "-new-message", (data: any) => {
+      if (authenticatedUser.uuid != null) {
+        if (data.sender !== authenticatedUser.uuid) {
+          handleNewMessageEvent(data);
+        }
+      }
+    });
   };
 
   useEffect(() => {

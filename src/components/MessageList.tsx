@@ -98,21 +98,6 @@ const MessageList: React.ForwardRefRenderFunction<
       }
     }
 
-    function listenForIncomingMessages() {
-      if (socket != null) {
-        if (socketSet) socket.removeAllListeners();
-        socket.on(loggedInUser.uuid + "-new-message", (data: any) => {
-          if (loggedInUser.uuid != null) {
-            if (data.sender !== loggedInUser.uuid) {
-              handleNewMessageEvent(data);
-            }
-          }
-        });
-        setSocketSet(true);
-      }
-    }
-
-    listenForIncomingMessages();
     emitUserOnline();
     if (sessionStorage.getItem(chat_uuid) != null) {
       const savedMessages = sessionStorage.getItem(chat_uuid);
