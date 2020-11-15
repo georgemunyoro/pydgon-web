@@ -48,7 +48,7 @@ const ChatHeader: React.ForwardRefRenderFunction<ChatHeaderRefObject, Props> = (
       <Text marginLeft={5} marginTop={2}>
         {contact.username}
       </Text>
-      <Badge margin={5} color={online ? "green" : undefined}>
+      <Badge marginLeft="auto" marginY={5} color={online ? "green" : undefined}>
         {online ? "online" : "offline"}
       </Badge>
     </Pane>
