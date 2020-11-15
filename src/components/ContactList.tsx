@@ -53,7 +53,8 @@ const ContactList: React.ForwardRefRenderFunction<
   async function fetchContacts(): Promise<void> {
     if (localStorage.hasOwnProperty("jwt")) {
       const res = await Api.getContacts(localStorage.getItem("jwt"));
-      setContacts(res.data.data.contacts);
+      if (res.data.data.contacts !== contacts)
+        setContacts(res.data.data.contacts);
       setFetchingContacts(false);
     }
   }

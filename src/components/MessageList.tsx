@@ -19,6 +19,7 @@ import Api from "../api";
 interface Props {
   handleNewMessageEvent: (message: any) => void;
   socket: SocketIOClient.Socket;
+  chat_uuid: string;
 }
 
 interface MessageModel {
@@ -32,40 +33,51 @@ interface MessageModel {
 
 export interface MessageListRefObject {
   addSentMessage: (message: UnsentMessage) => void;
+  addReceivedMessage: (message: any) => void;
 }
 
 const MessageList: React.ForwardRefRenderFunction<
   MessageListRefObject,
   Props
 > = (
-  { handleNewMessageEvent, socket }: Props,
+  { handleNewMessageEvent, socket, chat_uuid }: Props,
   ref: Ref<MessageListRefObject>
 ) => {
-  const loggedInUser = useSelector((state: RootState) => state.user.uuid);
-  const chat_uuid = useSelector(
-    (state: RootState) => state.currentChatUser.uuid
-  );
+  const loggedInUser = useSelector((state: RootState) => state.user);
 
   const listRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<MessageModel[]>([{}]);
   const [socketSet, setSocketSet] = useState(false);
 
+  function emitUserOnline() {
+    socket.emit("user-online", loggedInUser);
+  }
+
   function updateScroll() {
     if (listRef != null) {
       if (listRef.current != null) {
-        listRef.current.scrollTop = listRef.current?.scrollHeight;
+        listRef.current.scrollTop =
+          listRef.current?.scrollHeight - listRef.current?.clientHeight;
       }
     }
   }
 
-  function addSentMessage(message: UnsentMessage) {
-    setMessages((messages: any) => [...messages, message]);
+  async function addSentMessage(message: UnsentMessage) {
+    await setMessages((messages: any) => [...messages, message]);
     updateScroll();
+    emitUserOnline();
+  }
+
+  async function addReceivedMessage(message: any) {
+    await setMessages((messages: any) => [...messages, message]);
+    updateScroll();
+    emitUserOnline();
   }
 
   useImperativeHandle(ref, () => ({
     addSentMessage,
+    addReceivedMessage,
   }));
 
   useEffect(() => {
@@ -76,6 +88,10 @@ const MessageList: React.ForwardRefRenderFunction<
           chat_uuid
         );
         setMessages(res.data.data.messages);
+        sessionStorage.setItem(
+          chat_uuid,
+          JSON.stringify(res.data.data.messages)
+        );
         updateScroll();
       } catch (error) {
         console.error(error);
@@ -83,25 +99,32 @@ const MessageList: React.ForwardRefRenderFunction<
     }
 
     function listenForIncomingMessages() {
-      if (socket != null && !socketSet) {
-        socket.on(loggedInUser + "-new-message", (data: any) => {
-          if (loggedInUser != null) {
-            if (data.sender !== loggedInUser) {
+      if (socket != null) {
+        if (socketSet) socket.removeAllListeners();
+        socket.on(loggedInUser.uuid + "-new-message", (data: any) => {
+          if (loggedInUser.uuid != null) {
+            if (data.sender !== loggedInUser.uuid) {
               handleNewMessageEvent(data);
             }
-            if (data.sender !== chat_uuid) return;
           }
-          setMessages((messages: any) => [...messages, data]);
-          updateScroll();
         });
         setSocketSet(true);
       }
     }
 
     listenForIncomingMessages();
+    emitUserOnline();
+    if (sessionStorage.getItem(chat_uuid) != null) {
+      const savedMessages = sessionStorage.getItem(chat_uuid);
+      if (savedMessages != null) {
+        setMessages(JSON.parse(savedMessages));
+      }
+      return;
+    }
+
     fetchChatMessages();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chat_uuid, loggedInUser, socket, handleNewMessageEvent]);
+  }, [loggedInUser.uuid, socket, handleNewMessageEvent, chat_uuid]);
 
   return (
     <Pane
@@ -115,7 +138,7 @@ const MessageList: React.ForwardRefRenderFunction<
         <Message
           key={message.id}
           message={message}
-          loggedInUser={loggedInUser}
+          loggedInUser={loggedInUser.uuid}
         />
       ))}
     </Pane>

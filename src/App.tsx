@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoggedInUser, setLoggedIn } from "./actions";
 
 import io from "socket.io-client";
+import { ChatHeaderRefObject } from "./components/ChatHeader";
 
 const SOCKET_IO_URL = process.env.REACT_APP_SOCKET_IO_URL?.toString();
 
@@ -34,12 +35,23 @@ export const App: React.FC = () => {
   const messageListRef: Ref<MessageListRefObject> = createRef();
   const messageViewRef: Ref<MessageViewRefObject> = createRef();
   const contactListRef: Ref<ContactListRefObject> = createRef();
+  const chatHeaderRef: Ref<ChatHeaderRefObject> = createRef();
+
+  const handleClickContact = async (contact: any) => {
+    chatHeaderRef.current?.setOnline(false);
+    setCurrentChatContact(contact);
+    await messageViewRef.current?.updateViewUser(contact);
+  };
 
   const handleNewMessageEvent = (data: any) => {
+    if (data.sender == currentChatContact.uuid)
+      messageListRef.current?.addReceivedMessage(data);
+
     contactListRef.current?.fetchContacts();
   };
 
   const handleLoggedInEvent = (user: any) => {
+    messageViewRef.current?.setAuthUser(user);
     contactListRef.current?.fetchContacts();
   };
 
@@ -59,20 +71,54 @@ export const App: React.FC = () => {
     }
   };
 
+  const setupSocketListeners = (authenticatedUser: UserProfile) => {
+    window.addEventListener("beforeunload", (event) => {
+      event.preventDefault();
+      return (() => {
+        socket.emit("user-offline", authenticatedUser);
+      })();
+    });
+
+    socket.on(authenticatedUser.uuid + "-status-check", () => {
+      socket.emit("user-online", authenticatedUser);
+    });
+
+    socket.on("user-online", async (user: any) => {
+      if (
+        user.uuid !== authenticatedUser.uuid &&
+        user.uuid === currentChatContact.uuid
+      ) {
+        chatHeaderRef.current?.setOnline(true);
+      }
+    });
+
+    socket.on("user-offline", (user: any) => {
+      if (
+        user.uuid !== authenticatedUser.uuid &&
+        user.uuid === currentChatContact.uuid
+      ) {
+        chatHeaderRef.current?.setOnline(false);
+      }
+    });
+  };
+
   useEffect(() => {
     async function logUserIn() {
       const res = await Api.getLoggedInUserInfo(localStorage.getItem("jwt"));
       const authenticatedUser = res.data.data.authenticatedUser;
       handleLoggedInEvent(authenticatedUser);
       dispatch(setLoggedInUser(authenticatedUser));
+      socket.emit("user-online", authenticatedUser);
+      setupSocketListeners(authenticatedUser);
     }
 
+    sessionStorage.clear();
     if (localStorage.getItem("jwt") !== null) {
       logUserIn();
       dispatch(setLoggedIn());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, contactListRef]);
+  }, [contactListRef, messageViewRef]);
 
   return (
     <div id={"appRoot"}>
@@ -90,13 +136,11 @@ export const App: React.FC = () => {
       <Sidebar
         contactListRef={contactListRef}
         handleContactDeletion={handleContactDeletion}
-        handleClickContact={(contact: any) => {
-          setCurrentChatContact(contact);
-          messageViewRef.current?.updateViewUser(contact);
-        }}
+        handleClickContact={handleClickContact}
       />
       <MessageView
         socket={socket}
+        chatHeaderRef={chatHeaderRef}
         messageListRef={messageListRef}
         handleSendMessage={handleSendMessage}
         handleNewMessageEvent={handleNewMessageEvent}
