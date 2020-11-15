@@ -17,6 +17,7 @@ interface Props {
 
 export interface MessageViewRefObject {
   updateViewUser: (user: any) => void;
+  setAuthUser: (user: UserProfile) => void;
 }
 
 const MessageView: React.ForwardRefRenderFunction<
@@ -26,6 +27,7 @@ const MessageView: React.ForwardRefRenderFunction<
   { handleNewMessageEvent, socket, handleSendMessage, messageListRef }: Props,
   ref: Ref<MessageViewRefObject>
 ) => {
+  const [authenticatedUser, setAuthenticatedUser] = useState({});
   const [currentChatUser, setCurrentChatUser] = useState({
     username: "",
     uuid: "",
@@ -35,8 +37,13 @@ const MessageView: React.ForwardRefRenderFunction<
     setCurrentChatUser(user);
   }
 
+  function setAuthUser(user: UserProfile) {
+    setAuthenticatedUser(user);
+  }
+
   useImperativeHandle(ref, () => ({
     updateViewUser,
+    setAuthUser,
   }));
 
   if (currentChatUser.uuid === "") {
@@ -51,9 +58,14 @@ const MessageView: React.ForwardRefRenderFunction<
 
   return (
     <Pane display="flex" flexDirection="column" id="message_view">
-      <ChatHeader contact={currentChatUser} />
+      <ChatHeader
+        authenticatedUser={authenticatedUser}
+        socket={socket}
+        contact={currentChatUser}
+      />
       <MessageList
         ref={messageListRef}
+        chat_uuid={currentChatUser.uuid}
         socket={socket}
         handleNewMessageEvent={handleNewMessageEvent}
       />

@@ -40,6 +40,7 @@ export const App: React.FC = () => {
   };
 
   const handleLoggedInEvent = (user: any) => {
+    messageViewRef.current?.setAuthUser(user);
     contactListRef.current?.fetchContacts();
   };
 
@@ -59,12 +60,28 @@ export const App: React.FC = () => {
     }
   };
 
+  const setupSocketListeners = (authenticatedUser: UserProfile) => {
+    window.addEventListener("beforeunload", (event) => {
+      event.preventDefault();
+      return (() => {
+        socket.emit("user-offline", authenticatedUser);
+      })();
+    });
+
+    socket.on(authenticatedUser.uuid + "-status-check", () => {
+      console.log("check");
+      socket.emit("user-online", authenticatedUser);
+    });
+  };
+
   useEffect(() => {
     async function logUserIn() {
       const res = await Api.getLoggedInUserInfo(localStorage.getItem("jwt"));
       const authenticatedUser = res.data.data.authenticatedUser;
       handleLoggedInEvent(authenticatedUser);
       dispatch(setLoggedInUser(authenticatedUser));
+      socket.emit("user-online", authenticatedUser);
+      setupSocketListeners(authenticatedUser);
     }
 
     if (localStorage.getItem("jwt") !== null) {
@@ -72,7 +89,7 @@ export const App: React.FC = () => {
       dispatch(setLoggedIn());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, contactListRef]);
+  }, [contactListRef, messageViewRef]);
 
   return (
     <div id={"appRoot"}>
@@ -90,7 +107,8 @@ export const App: React.FC = () => {
       <Sidebar
         contactListRef={contactListRef}
         handleContactDeletion={handleContactDeletion}
-        handleClickContact={(contact: any) => {
+        handleClickContact={async (contact: any) => {
+          socket.emit("status-check", contact.uuid);
           setCurrentChatContact(contact);
           messageViewRef.current?.updateViewUser(contact);
         }}

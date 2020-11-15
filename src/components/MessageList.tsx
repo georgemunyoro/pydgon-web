@@ -19,6 +19,7 @@ import Api from "../api";
 interface Props {
   handleNewMessageEvent: (message: any) => void;
   socket: SocketIOClient.Socket;
+  chat_uuid: string;
 }
 
 interface MessageModel {
@@ -38,30 +39,33 @@ const MessageList: React.ForwardRefRenderFunction<
   MessageListRefObject,
   Props
 > = (
-  { handleNewMessageEvent, socket }: Props,
+  { handleNewMessageEvent, socket, chat_uuid }: Props,
   ref: Ref<MessageListRefObject>
 ) => {
-  const loggedInUser = useSelector((state: RootState) => state.user.uuid);
-  const chat_uuid = useSelector(
-    (state: RootState) => state.currentChatUser.uuid
-  );
+  const loggedInUser = useSelector((state: RootState) => state.user);
 
   const listRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<MessageModel[]>([{}]);
   const [socketSet, setSocketSet] = useState(false);
 
+  function emitUserOnline() {
+    socket.emit("user-online", loggedInUser);
+  }
+
   function updateScroll() {
     if (listRef != null) {
       if (listRef.current != null) {
-        listRef.current.scrollTop = listRef.current?.scrollHeight;
+        listRef.current.scrollTop =
+          listRef.current?.scrollHeight - listRef.current?.clientHeight;
       }
     }
   }
 
-  function addSentMessage(message: UnsentMessage) {
-    setMessages((messages: any) => [...messages, message]);
+  async function addSentMessage(message: UnsentMessage) {
+    await setMessages((messages: any) => [...messages, message]);
     updateScroll();
+    emitUserOnline();
   }
 
   useImperativeHandle(ref, () => ({
@@ -84,15 +88,17 @@ const MessageList: React.ForwardRefRenderFunction<
 
     function listenForIncomingMessages() {
       if (socket != null && !socketSet) {
-        socket.on(loggedInUser + "-new-message", (data: any) => {
-          if (loggedInUser != null) {
-            if (data.sender !== loggedInUser) {
+        socket.on(loggedInUser.uuid + "-new-message", (data: any) => {
+          if (loggedInUser.uuid != null) {
+            if (data.sender !== loggedInUser.uuid) {
               handleNewMessageEvent(data);
             }
-            if (data.sender !== chat_uuid) return;
           }
-          setMessages((messages: any) => [...messages, data]);
-          updateScroll();
+          if (data.sender === chat_uuid) {
+            console.log("MES", data, chat_uuid);
+            setMessages((messages: any) => [...messages, data]);
+            updateScroll();
+          }
         });
         setSocketSet(true);
       }
@@ -100,8 +106,9 @@ const MessageList: React.ForwardRefRenderFunction<
 
     listenForIncomingMessages();
     fetchChatMessages();
+    emitUserOnline();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chat_uuid, loggedInUser, socket, handleNewMessageEvent]);
+  }, [loggedInUser.uuid, socket, handleNewMessageEvent]);
 
   return (
     <Pane
@@ -115,7 +122,7 @@ const MessageList: React.ForwardRefRenderFunction<
         <Message
           key={message.id}
           message={message}
-          loggedInUser={loggedInUser}
+          loggedInUser={loggedInUser.uuid}
         />
       ))}
     </Pane>
