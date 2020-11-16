@@ -112,6 +112,28 @@ export default class Api {
       }
     });
 
+  public static getUnreadMessages = (
+    jwt: string | null,
+    uuid: string | null | undefined
+  ): Promise<any> =>
+    new Promise(async (resolve, reject) => {
+      try {
+        if (uuid === undefined) reject("uuid is undefined");
+        const res = await fetch(`${API_URL}/messages/${uuid}?unread`, {
+          headers: {
+            "X-Auth": `${jwt}`,
+          },
+        });
+        const data = await res.json();
+        resolve({
+          status: res.status,
+          data,
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+
   public static addContact = (
     jwt: string | null,
     contactId: string | null | undefined,
@@ -139,7 +161,7 @@ export default class Api {
 
   public static deleteContact = (
     jwt: string | null,
-    contactId: string | null | undefined,
+    contactId: string | null | undefined
   ): Promise<any> =>
     new Promise(async (resolve, reject) => {
       try {

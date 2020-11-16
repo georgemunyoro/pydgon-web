@@ -79,6 +79,15 @@ const Contact: React.FC<Props> = ({
   };
 
   useEffect(() => {
+    async function getUnreadMessages() {
+      const jwt = localStorage.getItem("jwt");
+      if (jwt != null) {
+        const res = await Api.getUnreadMessages(jwt, contact.contact);
+        if (res.status === 200) {
+          setUnread(res.data.data.messages.length);
+        }
+      }
+    }
     socket.on(authenticatedUser.uuid + "-new-message", (message: any) => {
       if (
         message.sender === contact.contact &&
@@ -87,7 +96,8 @@ const Contact: React.FC<Props> = ({
         setUnread((unread) => unread + 1);
       }
     });
-  }, []);
+    getUnreadMessages();
+  }, [authenticatedUser.uuid, contact.contact]);
 
   return (
     <Popover

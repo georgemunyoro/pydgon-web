@@ -18,6 +18,8 @@ import { setLoggedInUser, setLoggedIn } from "./actions";
 import io from "socket.io-client";
 import { ChatHeaderRefObject } from "./components/ChatHeader";
 
+import { useSetState } from "./hooks/useSetState";
+
 const SOCKET_IO_URL = process.env.REACT_APP_SOCKET_IO_URL?.toString();
 
 export const App: React.FC = () => {
@@ -25,7 +27,11 @@ export const App: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const [currentChatContact, setCurrentChatContact] = useState({
+  const [
+    currentChatContact,
+    setCurrentChatContact,
+    getCurrentChatContact,
+  ] = useSetState({
     username: "",
     uuid: "",
   });
@@ -43,10 +49,11 @@ export const App: React.FC = () => {
     await messageViewRef.current?.updateViewUser(contact);
   };
 
-  const handleNewMessageEvent = (data: any) => {
-    if (data.sender === currentChatContact.uuid) {
+  const handleNewMessageEvent = async (data: any) => {
+    const chat_uuid = await getCurrentChatContact();
+    if (data.sender === chat_uuid.uuid) {
       data.read = true;
-      messageListRef.current?.addReceivedMessage(data);
+      await messageListRef.current?.addReceivedMessage(data);
     }
 
     contactListRef.current?.fetchContacts();
@@ -77,6 +84,8 @@ export const App: React.FC = () => {
     window.addEventListener("beforeunload", (event) => {
       event.preventDefault();
       return (() => {
+        socket.removeAllListeners();
+        socket.disconnect();
         socket.emit("user-offline", authenticatedUser);
       })();
     });

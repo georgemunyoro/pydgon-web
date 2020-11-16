@@ -3,6 +3,9 @@ import VizSensor from "react-visibility-sensor";
 
 import { Pane, Text, Avatar, defaultTheme } from "evergreen-ui";
 
+import { useSelector } from "react-redux";
+import { RootState } from "../reducers";
+
 interface UserMessage {
   sender: string;
   recepient: string;
@@ -18,6 +21,9 @@ interface Props {
 }
 
 const Message: React.FC<Props> = ({ message, loggedInUser, socket }) => {
+  const chat_uuid = useSelector(
+    (state: RootState) => state.currentChatUser.uuid
+  );
   const [read, setRead] = useState(message.read);
 
   function initSocketListener() {
@@ -30,7 +36,7 @@ const Message: React.FC<Props> = ({ message, loggedInUser, socket }) => {
 
   useEffect(() => {
     initSocketListener();
-  }, [message]);
+  }, [message, chat_uuid]);
 
   return (
     <VizSensor
@@ -41,6 +47,7 @@ const Message: React.FC<Props> = ({ message, loggedInUser, socket }) => {
           message.id != null &&
           message.recepient === loggedInUser
         ) {
+          console.log("VIS", message.content);
           socket.emit("message-read", message);
         }
       }}
