@@ -54,6 +54,7 @@ export const App: React.FC = () => {
     if (data.sender === chat_uuid.uuid) {
       data.read = true;
       await messageListRef.current?.addReceivedMessage(data);
+      socket.emit("message-read", data);
     }
 
     contactListRef.current?.fetchContacts();
