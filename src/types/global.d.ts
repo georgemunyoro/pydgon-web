@@ -19,4 +19,6 @@ interface UnsentMessage {
   sender: string;
   recepient: string;
   content: string;
+  read: false;
+  id: string;
 }

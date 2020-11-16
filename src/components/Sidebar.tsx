@@ -9,9 +9,15 @@ interface Props {
   handleClickContact: Function;
   contactListRef: Ref<ContactListRefObject>;
   handleContactDeletion: (contact: any) => void;
+  socket: SocketIOClient.Socket;
 }
 
-const Sidebar: React.FC<Props> = ({ handleClickContact, contactListRef, handleContactDeletion }) => {
+const Sidebar: React.FC<Props> = ({
+  handleClickContact,
+  contactListRef,
+  handleContactDeletion,
+  socket,
+}) => {
   return (
     <div id="sidebar">
       <Pane
@@ -21,6 +27,7 @@ const Sidebar: React.FC<Props> = ({ handleClickContact, contactListRef, handleCo
         style={{ height: "100vh" }}
       >
         <ContactList
+          socket={socket}
           ref={contactListRef}
           handleContactDeletion={handleContactDeletion}
           handleClickContact={(user: any) => handleClickContact(user)}

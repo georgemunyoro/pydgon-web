@@ -5,6 +5,8 @@ import { Textarea, Pane, IconButton, CaretUpIcon } from "evergreen-ui";
 import { useSelector } from "react-redux";
 import { RootState } from "../reducers";
 
+import { uuid } from "uuidv4";
+
 interface Props {
   socket: SocketIOClient.Socket;
   handleSendMessage: (message: UnsentMessage) => void;
@@ -25,6 +27,8 @@ const MessageBox: React.FC<Props> = ({ socket, handleSendMessage }) => {
         sender: userId,
         recepient: currentChat,
         content: message,
+        read: false,
+        id: uuid(),
       };
       socket.emit("chat-message", messageObject);
       handleSendMessage(messageObject);
