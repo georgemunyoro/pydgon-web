@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import VizSensor from "react-visibility-sensor";
 
-import { Pane, Text, Avatar, defaultTheme } from "evergreen-ui";
+import { Pane, Text, defaultTheme } from "evergreen-ui";
 
 import { useSelector } from "react-redux";
 import { RootState } from "../reducers";
@@ -36,6 +36,7 @@ const Message: React.FC<Props> = ({ message, loggedInUser, socket }) => {
 
   useEffect(() => {
     initSocketListener();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [message, chat_uuid]);
 
   return (
