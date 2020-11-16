@@ -84,7 +84,10 @@ const Contact: React.FC<Props> = ({
       if (jwt != null) {
         const res = await Api.getUnreadMessages(jwt, contact.contact);
         if (res.status === 200) {
-          setUnread(res.data.data.messages.length);
+          const unreadMessages = res.data.data.messages.filter(
+            (message: any) => message.sender !== authenticatedUser.uuid
+          );
+          setUnread(unreadMessages.length);
         }
       }
     }
