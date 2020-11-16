@@ -121,6 +121,7 @@ const MessageList: React.ForwardRefRenderFunction<
     >
       {messages.map((message: any) => (
         <Message
+          socket={socket}
           key={message.id}
           message={message}
           loggedInUser={loggedInUser.uuid}
