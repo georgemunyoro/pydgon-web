@@ -20,3 +20,15 @@ html {
   left: 25%;
   top: 0;
 }
+
+.react_tinylink_card {
+  padding: 5px;
+  box-shadow: none !important;
+  border-radius: 5px;
+  margin: 5px;
+  background: none;
+}
+
+.react_tinylink_card_media {
+  border-radius: 5px;
+}
