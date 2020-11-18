@@ -3,6 +3,7 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
+[![CalVer](https://img.shields.io/badge/calver-0Y.MM.MICRO-22bfda.svg)](https://img.shields.io/badge/calver-0Y.MM.MICRO-22bfda.svg)
 [![MIT License][license-shield]][license-url]
 
 
@@ -146,14 +147,14 @@ Project Link: [https://github.com/georgemunyoro/pydgon-web](https://github.com/g
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/georgemunyoro/pydgon-web.svg?style=flat-square
+[contributors-shield]: https://img.shields.io/github/contributors/georgemunyoro/pydgon-web.svg
 [contributors-url]: https://github.com/georgemunyoro/pydgon-web/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/georgemunyoro/pydgon-web.svg?style=flat-square
+[forks-shield]: https://img.shields.io/github/forks/georgemunyoro/pydgon-web.svg
 [forks-url]: https://github.com/georgemunyoro/pydgon-web/network/members
-[stars-shield]: https://img.shields.io/github/stars/georgemunyoro/pydgon-web.svg?style=flat-square
+[stars-shield]: https://img.shields.io/github/stars/georgemunyoro/pydgon-web.svg
 [stars-url]: https://github.com/georgemunyoro/pydgon-web/stargazers
 [issues-url]: https://georgemunyoro.myjetbrains.com/youtrack/agiles/119-2/current
 [license-url]: https://github.com/georgemunyoro/pydgon-web/blob/master/LICENSE.txt
-[license-shield]: https://img.shields.io/github/license/georgemunyoro/pydgon-web.svg?style=flat-square
+[license-shield]: https://img.shields.io/github/license/georgemunyoro/pydgon-web.svg
 [linkedin-url]: https://linkedin.com/in/georgemunyoro
 
