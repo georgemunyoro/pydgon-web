@@ -1,46 +1,157 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![MIT License][license-shield]][license-url]
 
-In the project directory, you can run:
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
+  <a href="https://github.com/georgemunyoro/pydgon-web">
+    <img src="https://pydgon.s3.us-east-2.amazonaws.com/logos/pydgon-dark-transparent.png" alt="Logo" width="80" height="80">
+  </a>
 
-### `yarn start`
+  <h3 align="center">Pydgon Chat</h3>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+  <p align="center">
+    An awesome chat application! (It's pronounced "pigeon")
+    <br />
+    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Check it out »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+  </p>
+</p>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<!-- TABLE OF CONTENTS -->
+## Table of Contents
 
-### `yarn build`
+* [About the Project](#about-the-project)
+  * [Built With](#built-with)
+* [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+* [Usage](#usage)
+* [Roadmap](#roadmap)
+* [Contributing](#contributing)
+* [License](#license)
+* [Contact](#contact)
+* [Acknowledgements](#acknowledgements)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<!-- ABOUT THE PROJECT -->
+## About The Project
 
-### `yarn eject`
+![Pydgon Screenshot](https://pydgon.s3.us-east-2.amazonaws.com/repo/beta-screenshot.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Built With
+This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+* [NodeJS](https://nodejs.org/en/)
+* [React](https://reactjs.org/)
+* [Sequelize](https://sequelize.org/)
+* [Typescript](https://www.typescriptlang.org/)
+* [Express](https://expressjs.com/)
+* [Postgres](https://www.postgresql.org/)
+* [Evergreen](https://evergreen.segment.com/)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+<!-- GETTING STARTED -->
+## Getting Started
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+To get a local copy up and running follow these simple example steps:
+1. Ensure you have the [Pydgon API](https://github.com/georgemunyoro/pydgon-api) running
+2. Clone the repository onto your machine and navigate into the project folder
+	```sh
+	$ git clone https://github.com/georgemunyoro/pydgon-web && cd pydgon-web
+	```
+3. Install [yarn](https://yarnpkg.com/) globally with [npm](https://www.npmjs.com/) and install dependencies
+	```sh
+	$ npm i -g yarn && yarn install
+	```
+4. If you've changed the port, or address the [API](https://github.com/georgemunyoro/pydgon-api) is running on, update the `.env` file accordingly
+5. Start the application
+	```sh
+	$ yarn start
+	```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Prerequisites
+The application requires the following to be installed on your system in order to run:
+ - NodeJS v14.15.0
+ - npm 6.14.8
+##### NB: This list does not take into account the [API's](https://github.com/georgemunyoro/pydgon-api) prerequisites
+
+
+
+
+
+
+<!-- ROADMAP -->
+## Roadmap
+
+See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+##### NB: if you intend to add a feature or make changes that will go into the final product, you must create an issue on the project [board](), and comply to the contributing guidelines, if you are just messing around, or would like to build your own project on top of Pydgon, feel free to do as you please.
+1. Fork the Project
+2. Create your Branch
+	```sh
+	$ git checkout -b branchName
+	```
+3. Make your changes
+4. Commit your Changes
+	```sh
+	$ git commit -m 'Add some amazing feature or changes
+	```
+5. Push to the Branch
+	```sh
+	$ git push origin branchName
+	```
+7. Open a Pull Request
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+
+
+<!-- CONTACT -->
+## Contact
+
+George Munyoro - [@george_munyoro](https://twitter.com/your_username) - george@pydgon.social
+
+Project Link: [https://github.com/georgemunyoro/pydgon-web](https://github.com/georgemunyoro/pydgon-web)
+
+
+
+<!-- ACKNOWLEDGEMENTS -->
+## Acknowledgements
+* [React Tiny Link](https://www.npmjs.com/package/react-tiny-link)
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/georgemunyoro/pydgon-web.svg?style=flat-square
+[contributors-url]: https://github.com/georgemunyoro/pydgon-web/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/georgemunyoro/pydgon-web.svg?style=flat-square
+[forks-url]: https://github.com/georgemunyoro/pydgon-web/network/members
+[stars-shield]: https://img.shields.io/github/stars/georgemunyoro/pydgon-web.svg?style=flat-square
+[stars-url]: https://github.com/georgemunyoro/pydgon-web/stargazers
+[issues-url]: https://georgemunyoro.myjetbrains.com/youtrack/agiles/119-2/current
+[license-url]: https://github.com/georgemunyoro/pydgon-web/blob/master/LICENSE.txt
+[license-shield]: https://img.shields.io/github/license/georgemunyoro/pydgon-web.svg?style=flat-square
+[linkedin-url]: https://linkedin.com/in/georgemunyoro
