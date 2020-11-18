@@ -17,12 +17,12 @@
   <p align="center">
     An awesome chat application! (It's pronounced "pigeon")
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Check it out »</strong></a>
+    <a href="https://github.com/georgemunyoro/pydgon-web"><strong>Check it out »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/georgemunyoro/pydgon-web/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/georgemunyoro/pydgon-web/issues">Request Feature</a>
   </p>
 </p>
 
@@ -86,7 +86,7 @@ To get a local copy up and running follow these simple example steps:
 The application requires the following to be installed on your system in order to run:
  - NodeJS v14.15.0
  - npm 6.14.8
-##### NB: This list does not take into account the [API's](https://github.com/georgemunyoro/pydgon-api) prerequisites
+##### NB: This list does not take into account the [API's](https://georgemunyoro.myjetbrains.com/youtrack/issues?q=project:%20%7BMercury%7D%20State:%20Unresolved) prerequisites
 
 
 
