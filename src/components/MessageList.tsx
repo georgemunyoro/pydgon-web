@@ -7,7 +7,9 @@ import React, {
   useImperativeHandle,
 } from "react";
 
-import { Pane } from "evergreen-ui";
+import { Pane, Spinner, Badge } from "evergreen-ui";
+
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import Message from "./Message";
 
@@ -47,7 +49,11 @@ const MessageList: React.ForwardRefRenderFunction<
 
   const listRef = useRef<HTMLDivElement>(null);
 
+  const [hasMore, setHasMore] = useState(true);
   const [messages, setMessages] = useState<MessageModel[]>([{}]);
+  const [messagesToRender, setMessagesToRender] = useState<MessageModel[]>([
+    {},
+  ]);
   const [socketSet, setSocketSet] = useState(false);
 
   function emitUserOnline() {
@@ -64,15 +70,34 @@ const MessageList: React.ForwardRefRenderFunction<
   }
 
   async function addSentMessage(message: UnsentMessage) {
-    await setMessages((messages: any) => [...messages, message]);
+    await setMessages((messages: any) => [message, ...messages]);
+    await setMessagesToRender((messages: any) => [message, ...messages]);
     updateScroll();
     emitUserOnline();
   }
 
   async function addReceivedMessage(message: any) {
-    await setMessages((messages: any) => [...messages, message]);
+    await setMessages((messages: any) => [message, ...messages]);
+    await setMessagesToRender((messages: any) => [message, ...messages]);
     updateScroll();
     emitUserOnline();
+  }
+
+  async function fetchMoreMessages() {
+    const messagesAvailable = messages.length - messagesToRender.length;
+    if (messagesAvailable > 20) {
+      setMessagesToRender(messages.slice(0, messagesToRender.length + 25));
+
+      if (listRef != null) {
+        if (listRef.current != null) {
+          listRef.current.scrollTop = listRef.current.scrollTop =
+            0.21 * listRef.current.scrollHeight;
+        }
+      }
+    } else {
+      setMessagesToRender(messages);
+      setHasMore(false);
+    }
   }
 
   useImperativeHandle(ref, () => ({
@@ -87,7 +112,9 @@ const MessageList: React.ForwardRefRenderFunction<
           localStorage.getItem("jwt"),
           chat_uuid
         );
+        res.data.data.messages.reverse();
         setMessages(res.data.data.messages);
+        setMessagesToRender(res.data.data.messages.slice(0, 25));
         sessionStorage.setItem(
           chat_uuid,
           JSON.stringify(res.data.data.messages)
@@ -119,14 +146,36 @@ const MessageList: React.ForwardRefRenderFunction<
       overflowY="scroll"
       id={"messageList"}
     >
-      {messages.map((message: any) => (
-        <Message
-          socket={socket}
-          key={message.id}
-          message={message}
-          loggedInUser={loggedInUser.uuid}
-        />
-      ))}
+      <InfiniteScroll
+        dataLength={messagesToRender.length}
+        next={fetchMoreMessages}
+        style={{
+          display: "flex",
+          flexDirection: "column-reverse",
+        }}
+        inverse={true}
+        hasMore={hasMore}
+        endMessage={
+          <Pane width="100%" textAlign="center" padding={10}>
+            <Badge color="teal">Beginning of chat</Badge>
+          </Pane>
+        }
+        loader={
+          <Pane width="100%" padding={10}>
+            <Spinner margin="auto" />
+          </Pane>
+        }
+        scrollableTarget="messageList"
+      >
+        {messagesToRender.map((message: any) => (
+          <Message
+            socket={socket}
+            key={message.id}
+            message={message}
+            loggedInUser={loggedInUser.uuid}
+          />
+        ))}
+      </InfiniteScroll>
     </Pane>
   );
 };
