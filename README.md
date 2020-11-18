@@ -1,9 +1,12 @@
 
-
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+
 
 <!-- PROJECT LOGO -->
 <br />
@@ -15,9 +18,9 @@
   <h3 align="center">Pydgon Chat</h3>
 
   <p align="center">
-    An awesome chat application! (It's pronounced "pigeon")
+    An awesome chat application!
     <br />
-    <a href="https://github.com/georgemunyoro/pydgon-web"><strong>Check it out »</strong></a>
+    <a href="https://pydgon.social"><strong>Check it out »</strong></a>
     <br />
     <br />
     <a href="https://github.com/georgemunyoro/pydgon-web/issues">Report Bug</a>
@@ -48,7 +51,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Pydgon Screenshot](https://pydgon.s3.us-east-2.amazonaws.com/repo/beta-screenshot.png)
+[![Pydgon Screenshot][product-screenshot]](https://pydgon.s3.us-east-2.amazonaws.com/repo/beta-screenshot.png)
 
 
 
@@ -67,29 +70,45 @@ This section should list any major frameworks that you built your project using.
 ## Getting Started
 
 To get a local copy up and running follow these simple example steps:
-1. Ensure you have the [Pydgon API](https://github.com/georgemunyoro/pydgon-api) running
-2. Clone the repository onto your machine and navigate into the project folder
-	```sh
-	$ git clone https://github.com/georgemunyoro/pydgon-web && cd pydgon-web
-	```
-3. Install [yarn](https://yarnpkg.com/) globally with [npm](https://www.npmjs.com/) and install dependencies
-	```sh
-	$ npm i -g yarn && yarn install
-	```
-4. If you've changed the port, or address the [API](https://github.com/georgemunyoro/pydgon-api) is running on, update the `.env` file accordingly
-5. Start the application
-	```sh
-	$ yarn start
-	```
+1. Ensure you have the API(https://github.com/georgemunyoro/pydgon-api) running
+2. `$ git clone https://github.com/georgemunyoro/pydgon-web`
+3. `$ cd pydgon-web`
+4. `$ npm install -g yarn && yarn install` or if that doesn't work, try: `$ sudo npm install -g yarn && yarn install`
+5. If you've changed the port, or address the API is running on, update the `.env` file accordingly
+6. `yarn start`
 
 ### Prerequisites
-The application requires the following to be installed on your system in order to run:
- - NodeJS v14.15.0
- - npm 6.14.8
-##### NB: This list does not take into account the [API's](https://georgemunyoro.myjetbrains.com/youtrack/issues?q=project:%20%7BMercury%7D%20State:%20Unresolved) prerequisites
+
+This is an example of how to list things you need to use the software and how to install them.
+* npm
+```sh
+npm install npm@latest -g
+```
+
+### Installation
+
+1. Get a free API Key at [https://example.com](https://example.com)
+2. Clone the repo
+```sh
+git clone https://github.com/your_username_/Project-Name.git
+```
+3. Install NPM packages
+```sh
+npm install
+```
+4. Enter your API in `config.js`
+```JS
+const API_KEY = 'ENTER YOUR API';
+```
 
 
 
+<!-- USAGE EXAMPLES -->
+## Usage
+
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+
+_For more examples, please refer to the [Documentation](https://example.com)_
 
 
 
@@ -105,22 +124,13 @@ See the [open issues](https://github.com/othneildrew/Best-README-Template/issues
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-##### NB: if you intend to add a feature or make changes that will go into the final product, you must create an issue on the project [board](), and comply to the contributing guidelines, if you are just messing around, or would like to build your own project on top of Pydgon, feel free to do as you please.
 1. Fork the Project
-2. Create your Branch
-	```sh
-	$ git checkout -b branchName
-	```
-3. Make your changes
-4. Commit your Changes
-	```sh
-	$ git commit -m 'Add some amazing feature or changes
-	```
-5. Push to the Branch
-	```sh
-	$ git push origin branchName
-	```
-7. Open a Pull Request
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+
 
 <!-- LICENSE -->
 ## License
@@ -132,26 +142,42 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-George Munyoro - [@george_munyoro](https://twitter.com/your_username) - george@pydgon.social
+Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
 
-Project Link: [https://github.com/georgemunyoro/pydgon-web](https://github.com/georgemunyoro/pydgon-web)
+Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
 
 
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
-* [React Tiny Link](https://www.npmjs.com/package/react-tiny-link)
+* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
+* [Img Shields](https://shields.io)
+* [Choose an Open Source License](https://choosealicense.com)
+* [GitHub Pages](https://pages.github.com)
+* [Animate.css](https://daneden.github.io/animate.css)
+* [Loaders.css](https://connoratherton.com/loaders)
+* [Slick Carousel](https://kenwheeler.github.io/slick)
+* [Smooth Scroll](https://github.com/cferdinandi/smooth-scroll)
+* [Sticky Kit](http://leafo.net/sticky-kit)
+* [JVectorMap](http://jvectormap.com)
+* [Font Awesome](https://fontawesome.com)
+
+
+
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/georgemunyoro/pydgon-web.svg?style=flat-square
-[contributors-url]: https://github.com/georgemunyoro/pydgon-web/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/georgemunyoro/pydgon-web.svg?style=flat-square
-[forks-url]: https://github.com/georgemunyoro/pydgon-web/network/members
-[stars-shield]: https://img.shields.io/github/stars/georgemunyoro/pydgon-web.svg?style=flat-square
-[stars-url]: https://github.com/georgemunyoro/pydgon-web/stargazers
-[issues-url]: https://georgemunyoro.myjetbrains.com/youtrack/agiles/119-2/current
-[license-url]: https://github.com/georgemunyoro/pydgon-web/blob/master/LICENSE.txt
-[license-shield]: https://img.shields.io/github/license/georgemunyoro/pydgon-web.svg?style=flat-square
-[linkedin-url]: https://linkedin.com/in/georgemunyoro
+[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=flat-square
+[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=flat-square
+[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
+[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=flat-square
+[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
+[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=flat-square
+[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
+[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
+[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/othneildrew
+[product-screenshot]: images/screenshot.png
