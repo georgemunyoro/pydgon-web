@@ -112,8 +112,11 @@ const MessageList: React.ForwardRefRenderFunction<
           localStorage.getItem("jwt"),
           chat_uuid
         );
-        console.log(res.data.data.messages.slice(0, 5));
         res.data.data.messages.reverse();
+        res.data.data.messages.sort((a: MessageModel, b: MessageModel) => new Date(a.createdAt!).getTime() > new Date(b.createdAt!).getTime()
+            ? -1
+            : 1
+        );
         setMessages(res.data.data.messages);
         setMessagesToRender(res.data.data.messages.slice(0, 25));
         sessionStorage.setItem(
