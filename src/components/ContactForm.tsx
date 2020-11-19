@@ -9,7 +9,7 @@ import { Pane, TextInputField, Button } from "evergreen-ui";
 import Api from "../api";
 
 interface Props {
-  handleNewContactEvent: (contact: any) => void,
+  handleNewContactEvent: (contact: any) => void;
 }
 
 const ContactForm: React.FC<Props> = ({ handleNewContactEvent }) => {
@@ -18,9 +18,13 @@ const ContactForm: React.FC<Props> = ({ handleNewContactEvent }) => {
 
   const addContact = async () => {
     try {
-      const res = await Api.addContact(localStorage.getItem('jwt'), contactId, name);
+      const res = await Api.addContact(
+        localStorage.getItem("jwt"),
+        contactId,
+        name
+      );
       handleNewContactEvent(res.data);
-    } catch(error) {
+    } catch (error) {
       console.error(error);
     }
   };
@@ -41,6 +45,6 @@ const ContactForm: React.FC<Props> = ({ handleNewContactEvent }) => {
       <Button onClick={addContact}>Add</Button>
     </Pane>
   );
-}
+};
 
 export default ContactForm;
