@@ -1,3 +1,5 @@
+export module "*.png";
+
 interface loginAction {
   type: string;
   userProfile: UserProfile;
@@ -16,6 +18,7 @@ interface UserProfile {
 }
 
 interface UnsentMessage {
+  embededFile?: string;
   sender: string;
   recepient: string;
   content: string;
