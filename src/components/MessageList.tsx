@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../reducers";
 
 import Api from "../api";
+import { UnsentMessage } from "../types/global";
 
 interface Props {
   handleNewMessageEvent: (message: any) => void;
@@ -113,7 +114,8 @@ const MessageList: React.ForwardRefRenderFunction<
           chat_uuid
         );
         res.data.data.messages.reverse();
-        res.data.data.messages.sort((a: MessageModel, b: MessageModel) => new Date(a.createdAt!).getTime() > new Date(b.createdAt!).getTime()
+        res.data.data.messages.sort((a: MessageModel, b: MessageModel) =>
+          new Date(a.createdAt!).getTime() > new Date(b.createdAt!).getTime()
             ? -1
             : 1
         );
