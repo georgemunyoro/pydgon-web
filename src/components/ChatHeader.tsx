@@ -7,6 +7,7 @@ import React, {
 } from "react";
 
 import { Pane, Avatar, Text, Badge } from "evergreen-ui";
+import { UserProfile } from "../types/global";
 
 export interface ChatHeaderRefObject {
   setOnline: React.Dispatch<React.SetStateAction<boolean>>;
