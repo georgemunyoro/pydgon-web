@@ -1,5 +1,3 @@
-export module "*.png";
-
 interface loginAction {
   type: string;
   userProfile: UserProfile;
@@ -25,3 +23,5 @@ interface UnsentMessage {
   read: false;
   id: string;
 }
+
+export module "*.png";
