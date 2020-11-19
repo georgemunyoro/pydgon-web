@@ -18,6 +18,7 @@ import { RootState } from "../reducers";
 import { uuid } from "uuidv4";
 
 import Api from "../api";
+import { UnsentMessage } from "../types/global";
 
 interface Props {
   socket: SocketIOClient.Socket;

@@ -14,6 +14,7 @@ import ChatHeader from "./ChatHeader";
 
 import { MessageListRefObject } from "./MessageList";
 import { ChatHeaderRefObject } from "./ChatHeader";
+import { UnsentMessage, UserProfile } from "../types/global";
 
 interface Props {
   handleNewMessageEvent: (message: any) => void;
