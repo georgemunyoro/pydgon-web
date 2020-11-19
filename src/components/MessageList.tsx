@@ -85,8 +85,8 @@ const MessageList: React.ForwardRefRenderFunction<
 
   async function fetchMoreMessages() {
     const messagesAvailable = messages.length - messagesToRender.length;
-    if (messagesAvailable > 20) {
-      setMessagesToRender(messages.slice(0, messagesToRender.length + 25));
+    if (messagesAvailable > 25) {
+      setMessagesToRender(messages.slice(0, messagesToRender.length + 24));
 
       if (listRef != null) {
         if (listRef.current != null) {
@@ -112,6 +112,7 @@ const MessageList: React.ForwardRefRenderFunction<
           localStorage.getItem("jwt"),
           chat_uuid
         );
+        console.log(res.data.data.messages.slice(0, 5));
         res.data.data.messages.reverse();
         setMessages(res.data.data.messages);
         setMessagesToRender(res.data.data.messages.slice(0, 25));
