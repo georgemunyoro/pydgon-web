@@ -99,7 +99,7 @@ const ContactList: React.ForwardRefRenderFunction<
         </Pane>
       </Dialog>
       <Table.Body>
-        <Table.Row height={45}>
+        <Table.Row height={47}>
           <IconButton
             onClick={() => setShowAddContactDialog(true)}
             icon={AddIcon}

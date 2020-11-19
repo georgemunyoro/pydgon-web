@@ -1,6 +1,8 @@
 import React, { useEffect, createRef, Ref, useState } from "react";
 import "./App.css";
 
+import "react-image-lightbox/style.css";
+
 import Sidebar from "./components/Sidebar";
 import MessageView, { MessageViewRefObject } from "./components/MessageView";
 import { ContactListRefObject } from "./components/ContactList";
@@ -19,6 +21,7 @@ import io from "socket.io-client";
 import { ChatHeaderRefObject } from "./components/ChatHeader";
 
 import { useSetState } from "./hooks/useSetState";
+import { UnsentMessage, UserProfile } from "./types/global";
 
 const SOCKET_IO_URL = process.env.REACT_APP_SOCKET_IO_URL?.toString();
 

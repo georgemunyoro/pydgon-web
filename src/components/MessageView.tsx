@@ -6,7 +6,7 @@ import React, {
   ChangeEventHandler,
 } from "react";
 
-import { Pane, Text, Badge } from "evergreen-ui";
+import { Pane, Text, Badge, CornerDialog, Button } from "evergreen-ui";
 
 import MessageBox from "./MessageBox";
 import MessageList from "./MessageList";
@@ -41,6 +41,7 @@ const MessageView: React.ForwardRefRenderFunction<
   }: Props,
   ref: Ref<MessageViewRefObject>
 ) => {
+  const [showWelcomeDialog, setShowWelcomeDialog] = useState(true);
   const [authenticatedUser, setAuthenticatedUser] = useState({});
   const [currentChatUser, setCurrentChatUser] = useState({
     username: "",
@@ -64,11 +65,32 @@ const MessageView: React.ForwardRefRenderFunction<
     return (
       <Pane textAlign="center" lineHeight="100vh" id="message_view">
         <Text margin={10} size={600} textAlign="center">
-          Welcome to Mercury
+          Welcome to Pydgon
         </Text>
         <Badge color="neutral" isSolid>
           Beta
         </Badge>
+        <React.Fragment>
+          <CornerDialog
+            title="Hello World!"
+            isShown={showWelcomeDialog}
+            onCloseComplete={() => setShowWelcomeDialog(false)}
+            onConfirm={() =>
+              window.open(
+                "https://github.com/georgemunyoro/pydgon-web",
+                "_blank"
+              )
+            }
+          >
+            <Text>
+              Thank you for using Pydgon, if you're interested in helping out
+              with the project, check out
+              <a href="https://github.com/georgemunyoro/pydgon-web">
+                our github repo
+              </a>
+            </Text>
+          </CornerDialog>
+        </React.Fragment>
       </Pane>
     );
   }
