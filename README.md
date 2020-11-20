@@ -107,7 +107,7 @@ See the [open issues](https://github.com/georgemunyoro/pydgon-web/issues) for a 
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-##### NB: if you intend to add a feature or make changes that will go into the final product, you must create an issue on the project [board](), and comply to the contributing guidelines, if you are just messing around, or would like to build your own project on top of Pydgon, feel free to do as you please.
+##### NB: if you intend to add a feature or make changes that will go into the final product, you must create an issue on the [project board](), and comply to the contributing guidelines, if you are just messing around, or would like to build your own project on top of Pydgon, feel free to do as you please.
 1. Fork the Project
 2. Create your Branch
 	```sh
