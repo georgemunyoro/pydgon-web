@@ -99,7 +99,7 @@ const ContactList: React.ForwardRefRenderFunction<
         </Pane>
       </Dialog>
       <Table.Body>
-        <Table.Row height={45}>
+        <Table.Row height={47}>
           <IconButton
             onClick={() => setShowAddContactDialog(true)}
             icon={AddIcon}
@@ -147,4 +147,4 @@ const ContactList: React.ForwardRefRenderFunction<
   );
 };
 
-export default forwardRef(ContactList);
+export default React.memo(forwardRef(ContactList));

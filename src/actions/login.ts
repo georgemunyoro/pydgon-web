@@ -1,13 +1,14 @@
+import { loginAction, UserProfile } from "../types/global";
 
 export const setLoggedInUser = (userProfile: UserProfile): loginAction => ({
-  type: 'SET_USER',
+  type: "SET_USER",
   userProfile,
 });
 
 export const setLoggedIn = () => ({
-    type: 'LOGIN',
+  type: "LOGIN",
 });
 
 export const setLoggedOut = () => ({
-    type: 'LOGOUT',
+  type: "LOGOUT",
 });

@@ -1,4 +1,5 @@
 const API_URL = process.env.REACT_APP_API_URL;
+const IMGUR_CLIENT_ID = process.env.REACT_APP_IMGUR_CLIENT_ID;
 
 const defaultHeaders = {
   "Content-Type": "application/json",
@@ -43,6 +44,26 @@ export default class Api {
           method: "POST",
           headers: defaultHeaders,
           body: JSON.stringify(registrationForm),
+        });
+        const data = await res.json();
+        resolve({
+          status: res.status,
+          data,
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+
+  public static uploadImage = (fileFormData: any): Promise<any> =>
+    new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch(`https://api.imgur.com/3/image/`, {
+          method: "POST",
+          headers: {
+            Authorization: "Client-ID " + IMGUR_CLIENT_ID,
+          },
+          body: fileFormData,
         });
         const data = await res.json();
         resolve({

@@ -16,9 +16,12 @@ interface UserProfile {
 }
 
 interface UnsentMessage {
+  embededFile?: string;
   sender: string;
   recepient: string;
   content: string;
   read: false;
   id: string;
 }
+
+export module "*.png";

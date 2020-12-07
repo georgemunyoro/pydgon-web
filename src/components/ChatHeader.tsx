@@ -1,12 +1,9 @@
 import React, {
   useEffect,
   useState,
-  Ref,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+} from 'react';
 
-import { Pane, Avatar, Text, Badge } from "evergreen-ui";
+import {Pane, Avatar, Text, Badge} from 'evergreen-ui';
 
 export interface ChatHeaderRefObject {
   setOnline: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,21 +15,33 @@ interface Props {
     uuid: string;
   };
   socket: SocketIOClient.Socket;
-  authenticatedUser: UserProfile;
 }
 
-const ChatHeader: React.ForwardRefRenderFunction<ChatHeaderRefObject, Props> = (
-  { contact, socket, authenticatedUser }: Props,
-  ref: Ref<ChatHeaderRefObject>
-) => {
-  const [online, setOnline] = useState(false);
+const ChatHeader: React.FC<Props> = ({contact, socket}) => {
+  const [isOnline, setIsOnline] = useState<boolean>(false);
 
-  useImperativeHandle(ref, () => ({
-    setOnline,
-  }));
+  const setupOnlineStatusCheckSocketListener = () => {
+    socket.on("user-online", async (user: any) => {
+      if (
+        user.uuid === contact.uuid
+      ) {
+		setIsOnline(true);
+      }
+    });
+
+    socket.on("user-offline", async (user: any) => {
+      if (
+        user.uuid === contact.uuid
+      ) {
+		setIsOnline(false);
+      }
+    });
+  }
 
   useEffect(() => {
-    socket.emit("status-check", contact.uuid);
+	setIsOnline(false);
+	setupOnlineStatusCheckSocketListener();
+    socket.emit('status-check', contact.uuid);
   }, [contact]);
 
   return (
@@ -42,17 +51,16 @@ const ChatHeader: React.ForwardRefRenderFunction<ChatHeaderRefObject, Props> = (
       flexShrink={0}
       padding={10}
       borderBottom
-      display="flex"
-    >
+      display="flex">
       <Avatar name={contact.username} />
       <Text marginLeft={5} marginTop={2}>
         {contact.username}
       </Text>
-      <Badge marginLeft="auto" marginY={5} color={online ? "green" : undefined}>
-        {online ? "online" : "offline"}
+      <Badge marginLeft="auto" marginY={5} color={isOnline ? 'green' : undefined}>
+        {isOnline ? 'online' : 'offline'}
       </Badge>
     </Pane>
   );
 };
 
-export default forwardRef(ChatHeader);
+export default ChatHeader;

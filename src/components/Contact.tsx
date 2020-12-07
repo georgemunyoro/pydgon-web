@@ -21,6 +21,7 @@ import {
 } from "evergreen-ui";
 
 import Api from "../api";
+import { UserProfile } from "../types/global";
 
 interface UserContact {
   id: number;
