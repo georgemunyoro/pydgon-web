@@ -1,28 +1,21 @@
-import React, {
-  useState,
-  useEffect,
-  Ref,
-  forwardRef,
-  useRef,
-  useImperativeHandle,
-} from "react";
+import React, {useState, useEffect, useRef} from 'react';
 
-import { Pane, Spinner, Badge } from "evergreen-ui";
+import {Pane, Spinner, Badge} from 'evergreen-ui';
 
-import InfiniteScroll from "react-infinite-scroll-component";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-import Message from "./Message";
+import Message from './Message';
 
-import { useSelector } from "react-redux";
-import { RootState } from "../reducers";
+import {useSelector} from 'react-redux';
+import {RootState} from '../reducers';
 
-import Api from "../api";
-import { UnsentMessage } from "../types/global";
+import Api from '../api';
+import {UnsentMessage} from '../types/global';
 
 interface Props {
-  handleNewMessageEvent: (message: any) => void;
   socket: SocketIOClient.Socket;
   chat_uuid: string;
+  messages: any[];
 }
 
 interface MessageModel {
@@ -34,31 +27,19 @@ interface MessageModel {
   recepient?: string;
 }
 
-export interface MessageListRefObject {
-  addSentMessage: (message: UnsentMessage) => void;
-  addReceivedMessage: (message: any) => void;
-}
-
-const MessageList: React.ForwardRefRenderFunction<
-  MessageListRefObject,
-  Props
-> = (
-  { handleNewMessageEvent, socket, chat_uuid }: Props,
-  ref: Ref<MessageListRefObject>
-) => {
+const MessageList: React.FC<Props> = ({socket, chat_uuid, messages}: Props) => {
   const loggedInUser = useSelector((state: RootState) => state.user);
 
   const listRef = useRef<HTMLDivElement>(null);
 
   const [hasMore, setHasMore] = useState(true);
-  const [messages, setMessages] = useState<MessageModel[]>([{}]);
+  // const [messages, setMessages] = useState<MessageModel[]>([{}]);
   const [messagesToRender, setMessagesToRender] = useState<MessageModel[]>([
     {},
   ]);
-  const [socketSet, setSocketSet] = useState(false);
 
   function emitUserOnline() {
-    socket.emit("user-online", loggedInUser);
+    socket.emit('user-online', loggedInUser);
   }
 
   function updateScroll() {
@@ -68,20 +49,6 @@ const MessageList: React.ForwardRefRenderFunction<
           listRef.current?.scrollHeight - listRef.current?.clientHeight;
       }
     }
-  }
-
-  async function addSentMessage(message: UnsentMessage) {
-    await setMessages((messages: any) => [message, ...messages]);
-    await setMessagesToRender((messages: any) => [message, ...messages]);
-    updateScroll();
-    emitUserOnline();
-  }
-
-  async function addReceivedMessage(message: any) {
-    await setMessages((messages: any) => [message, ...messages]);
-    await setMessagesToRender((messages: any) => [message, ...messages]);
-    updateScroll();
-    emitUserOnline();
   }
 
   async function fetchMoreMessages() {
@@ -101,48 +68,12 @@ const MessageList: React.ForwardRefRenderFunction<
     }
   }
 
-  useImperativeHandle(ref, () => ({
-    addSentMessage,
-    addReceivedMessage,
-  }));
-
   useEffect(() => {
-    async function fetchChatMessages() {
-      try {
-        const res = await Api.getMessages(
-          localStorage.getItem("jwt"),
-          chat_uuid
-        );
-        res.data.data.messages.reverse();
-        res.data.data.messages.sort((a: MessageModel, b: MessageModel) =>
-          new Date(a.createdAt!).getTime() > new Date(b.createdAt!).getTime()
-            ? -1
-            : 1
-        );
-        setMessages(res.data.data.messages);
-        setMessagesToRender(res.data.data.messages.slice(0, 25));
-        sessionStorage.setItem(
-          chat_uuid,
-          JSON.stringify(res.data.data.messages)
-        );
-        updateScroll();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
     emitUserOnline();
-    if (sessionStorage.getItem(chat_uuid) != null) {
-      const savedMessages = sessionStorage.getItem(chat_uuid);
-      if (savedMessages != null) {
-        setMessages(JSON.parse(savedMessages));
-      }
-      return;
-    }
-
-    fetchChatMessages();
+    setMessagesToRender(messages);
+    updateScroll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedInUser.uuid, socket, handleNewMessageEvent, chat_uuid]);
+  }, [chat_uuid]);
 
   return (
     <Pane
@@ -150,14 +81,13 @@ const MessageList: React.ForwardRefRenderFunction<
       flexGrow={1}
       overflowX="hidden"
       overflowY="scroll"
-      id={"messageList"}
-    >
+      id={'messageList'}>
       <InfiniteScroll
         dataLength={messagesToRender.length}
         next={fetchMoreMessages}
         style={{
-          display: "flex",
-          flexDirection: "column-reverse",
+          display: 'flex',
+          flexDirection: 'column-reverse',
         }}
         inverse={true}
         hasMore={hasMore}
@@ -171,8 +101,7 @@ const MessageList: React.ForwardRefRenderFunction<
             <Spinner margin="auto" />
           </Pane>
         }
-        scrollableTarget="messageList"
-      >
+        scrollableTarget="messageList">
         {messagesToRender.map((message: any) => (
           <Message
             socket={socket}
@@ -186,4 +115,4 @@ const MessageList: React.ForwardRefRenderFunction<
   );
 };
 
-export default forwardRef(MessageList);
+export default React.memo(MessageList);

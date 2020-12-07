@@ -22,10 +22,10 @@ import { UnsentMessage } from "../types/global";
 
 interface Props {
   socket: SocketIOClient.Socket;
-  handleSendMessage: (message: UnsentMessage) => void;
+  addMessageToChatView: (message: UnsentMessage) => void;
 }
 
-const MessageBox: React.FC<Props> = ({ socket, handleSendMessage }) => {
+const MessageBox: React.FC<Props> = ({ socket, addMessageToChatView }) => {
   const [message, setMessage] = useState("");
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -49,7 +49,7 @@ const MessageBox: React.FC<Props> = ({ socket, handleSendMessage }) => {
         id: uuid(),
       };
       socket.emit("chat-message", messageObject);
-      handleSendMessage(messageObject);
+	  addMessageToChatView(messageObject)
       setMessage("");
     }
   };
@@ -71,13 +71,13 @@ const MessageBox: React.FC<Props> = ({ socket, handleSendMessage }) => {
         const messageObject: UnsentMessage = {
           sender: userId,
           recepient: currentChat,
-          content: "image",
+          content: "",
           read: false,
           embededFile: res.data.data.link,
           id: uuid(),
         };
         socket.emit("chat-message", messageObject);
-        handleSendMessage(messageObject);
+		addMessageToChatView(messageObject)
       }
 
       setUploading(false);

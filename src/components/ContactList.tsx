@@ -147,4 +147,4 @@ const ContactList: React.ForwardRefRenderFunction<
   );
 };
 
-export default forwardRef(ContactList);
+export default React.memo(forwardRef(ContactList));
