@@ -33,7 +33,6 @@ const MessageList: React.FC<Props> = ({socket, chat_uuid, messages}: Props) => {
   const listRef = useRef<HTMLDivElement>(null);
 
   const [hasMore, setHasMore] = useState(true);
-  // const [messages, setMessages] = useState<MessageModel[]>([{}]);
   const [messagesToRender, setMessagesToRender] = useState<MessageModel[]>([
     {},
   ]);
