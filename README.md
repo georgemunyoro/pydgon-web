@@ -116,7 +116,7 @@ Contributions are what make the open source community such an amazing place to b
 3. Make your changes
 4. Commit your Changes
 	```sh
-	$ git commit -m 'Add some amazing feature or changes
+	$ git commit -m "Add some amazing feature or changes"
 	```
 5. Push to the Branch
 	```sh
