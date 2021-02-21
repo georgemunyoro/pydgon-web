@@ -1,37 +1,39 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 
-import {Pane, Text, Badge, CornerDialog, Button} from 'evergreen-ui';
+import { Pane, Text, Badge, CornerDialog, Button } from "evergreen-ui";
 
-import {useSelector} from 'react-redux';
-import {RootState} from '../reducers';
+import { useSelector } from "react-redux";
+import { RootState } from "../reducers";
 
-import MessageBox from './MessageBox';
-import MessageList from './MessageList';
-import ChatHeader from './ChatHeader';
+import MessageBox from "./MessageBox";
+import MessageList from "./MessageList";
+import ChatHeader from "./ChatHeader";
 
-import Api from '../api';
+import Api from "../api";
 
-import {UnsentMessage} from '../types/global';
+import { UnsentMessage } from "../types/global";
 
 interface Props {
   socket: SocketIOClient.Socket;
-  currentChatUser: {username: string; uuid: string};
+  currentChatUser: { username: string; uuid: string };
 }
 
-const MessageView: React.FC<Props> = ({socket, currentChatUser}: Props) => {
+const MessageView: React.FC<Props> = ({ socket, currentChatUser }: Props) => {
   const [showWelcomeDialog, setShowWelcomeDialog] = useState(true);
   const [messages, setMessages] = useState<any>([]);
 
   const loggedInUser = useSelector((state: RootState) => state.user);
 
   const setupSocketListeners = () => {
-    socket.on(loggedInUser.uuid + '-new-message', (data: any) => {
+    socket.on(loggedInUser.uuid + "-new-message", (data: any) => {
       if (loggedInUser.uuid != null) {
         if (data.sender !== loggedInUser.uuid) {
           if (data.sender === currentChatUser.uuid) {
-            data.read = true;
-            addMessage(data);
-            socket.emit('message-read', data);
+            if (messages.filter((m: any) => m.uuid == data.uuid).length == 0) {
+              data.read = true;
+              addMessage(data);
+              socket.emit("message-read", data);
+            }
           }
         }
       }
@@ -45,20 +47,20 @@ const MessageView: React.FC<Props> = ({socket, currentChatUser}: Props) => {
   async function fetchChatMessages() {
     try {
       const res = await Api.getMessages(
-        localStorage.getItem('jwt'),
-        currentChatUser.uuid,
+        localStorage.getItem("jwt"),
+        currentChatUser.uuid
       );
       res.data.data.messages.reverse();
       res.data.data.messages.sort((a: any, b: any) =>
         new Date(a.createdAt!).getTime() > new Date(b.createdAt!).getTime()
           ? -1
-          : 1,
+          : 1
       );
       if (res.data.data.messages.length != messages.length) {
         setMessages(res.data.data.messages);
         sessionStorage.setItem(
           currentChatUser.uuid,
-          JSON.stringify(res.data.data.messages),
+          JSON.stringify(res.data.data.messages)
         );
       }
     } catch (error) {
@@ -70,15 +72,16 @@ const MessageView: React.FC<Props> = ({socket, currentChatUser}: Props) => {
     if (sessionStorage.getItem(currentChatUser.uuid) != null) {
       const savedMessages = sessionStorage.getItem(currentChatUser.uuid);
       if (savedMessages != null) {
+        console.log("FOUND CACHED CHAT: " + currentChatUser.uuid);
         setMessages(JSON.parse(savedMessages));
       }
       return;
     }
     setupSocketListeners();
     fetchChatMessages();
-  });
+  }, [currentChatUser]);
 
-  if (currentChatUser.uuid === '') {
+  if (currentChatUser.uuid === "") {
     return (
       <Pane textAlign="center" lineHeight="100vh" id="message_view">
         <Text margin={10} size={600} textAlign="center">
@@ -94,10 +97,11 @@ const MessageView: React.FC<Props> = ({socket, currentChatUser}: Props) => {
             onCloseComplete={() => setShowWelcomeDialog(false)}
             onConfirm={() =>
               window.open(
-                'https://github.com/georgemunyoro/pydgon-web',
-                '_blank',
+                "https://github.com/georgemunyoro/pydgon-web",
+                "_blank"
               )
-            }>
+            }
+          >
             <Text>
               Thank you for using Pydgon, if you're interested in helping out
               with the project, check out
@@ -114,7 +118,11 @@ const MessageView: React.FC<Props> = ({socket, currentChatUser}: Props) => {
   return (
     <Pane display="flex" flexDirection="column" id="message_view">
       <ChatHeader contact={currentChatUser} socket={socket} />
-      <MessageList messages={messages} chat_uuid={currentChatUser.uuid} socket={socket} />
+      <MessageList
+        messages={messages}
+        chat_uuid={currentChatUser.uuid}
+        socket={socket}
+      />
       <MessageBox addMessageToChatView={addMessage} socket={socket} />
     </Pane>
   );
