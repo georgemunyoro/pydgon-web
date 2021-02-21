@@ -120,7 +120,7 @@ export default class Api {
         if (uuid === undefined) reject("uuid is undefined");
         const res = await fetch(`${API_URL}/messages/${uuid}`, {
           headers: {
-            "X-Auth": jwt,
+            "X-Auth": `${jwt}`,
           },
         });
         const data = await res.json();
@@ -142,7 +142,7 @@ export default class Api {
         if (uuid === undefined) reject("uuid is undefined");
         const res = await fetch(`${API_URL}/messages/${uuid}?unread`, {
           headers: {
-            "X-Auth": jwt,
+            "X-Auth": `${jwt}`,
           },
         });
         const data = await res.json();
@@ -166,7 +166,7 @@ export default class Api {
         const res = await fetch(`${API_URL}/contacts/${contactId}`, {
           method: "POST",
           headers: {
-            "X-Auth": jwt,
+            "X-Auth": `${jwt}`,
           },
           body: JSON.stringify({ name: contactName }),
         });
@@ -190,7 +190,7 @@ export default class Api {
         const res = await fetch(`${API_URL}/contacts/${contactId}`, {
           method: "DELETE",
           headers: {
-            "X-Auth": jwt,
+            "X-Auth": `${jwt}`,
           },
         });
         const data = await res.json();

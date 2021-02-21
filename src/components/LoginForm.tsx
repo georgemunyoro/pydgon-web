@@ -58,7 +58,11 @@ const LoginPopup: React.FC<Props> = ({ handleLoggedInEvent }) => {
       );
       setIsLoginView(true);
     } else {
-      res.data.error.forEach((error: any) => toaster.danger(error));
+      if (Object.keys(res.data).includes("message")) {
+        toaster.danger(res.data.data.error);
+        return
+      }
+      res.data.errors.forEach((error: any) => toaster.danger(error));
     }
   };
 

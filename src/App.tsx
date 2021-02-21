@@ -21,7 +21,6 @@ import io from "socket.io-client";
 import { useSetState } from "./hooks/useSetState";
 import { UnsentMessage, UserProfile } from "./types/global";
 
-
 const SOCKET_IO_URL = process.env.REACT_APP_SOCKET_IO_URL?.toString();
 
 export const App: React.FC = () => {
@@ -118,10 +117,7 @@ export const App: React.FC = () => {
         handleContactDeletion={handleContactDeletion}
         handleClickContact={handleClickContact}
       />
-      <MessageView
-        socket={socket}
-		currentChatUser={currentChatContact}
-      />
+      <MessageView socket={socket} currentChatUser={currentChatContact} />
     </div>
   );
 };

@@ -72,7 +72,7 @@ const MessageList: React.FC<Props> = ({socket, chat_uuid, messages}: Props) => {
     setMessagesToRender(messages);
     updateScroll();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chat_uuid]);
+  }, [chat_uuid, messages]);
 
   return (
     <Pane
