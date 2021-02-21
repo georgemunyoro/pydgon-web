@@ -61,11 +61,8 @@ const MessageBox: React.FC<Props> = ({ socket, addMessageToChatView }) => {
       return formData;
     });
 
-    console.log(images);
-
     try {
       const res = await Api.uploadImage(images[0]);
-      console.log(res.data.data.link);
 
       if (socket != null && userId != null && currentChat != null) {
         const messageObject: UnsentMessage = {
