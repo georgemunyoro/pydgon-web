@@ -73,29 +73,33 @@ const Message: React.FC<Props> = ({ message, loggedInUser, socket }) => {
 
   return (
     <Pane
-      border={read}
-      borderRight
+      // border={read}
+      // borderRight
       transitionDuration="1s"
-      borderColor={read ? "" : "royalblue"}
-      marginY={5}
-      marginX={15}
+      borderColor="#eee"
+      // borderTop
+      // marginY={5}
+      // marginX={15}
+      margin={10}
       display="flex"
-      borderRadius={3}
+      borderRadius={5}
       flexDirection="column"
-      maxWidth="70%"
+      // maxWidth="70%"
       wordWrap="break-word"
       wordBreak="break-word"
       whiteSpace="pre-wrap"
       background={
         message.sender === loggedInUser
-          ? defaultTheme.colors.background.greenTint
-          : defaultTheme.colors.background.blueTint
+          ? defaultTheme.colors.background.blueTint
+          : "#fff"
       }
-      hoverElevation={2}
-      style={{
-        width: containsLink ? "50%" : "max-content",
-        marginLeft: message.sender === loggedInUser ? "auto" : "none",
-      }}
+      // hoverElevation={2}
+      style={
+        {
+          // width: containsLink ? "50%" : "max-content",
+          // marginLeft: message.sender === loggedInUser ? "auto" : "none",
+        }
+      }
     >
       {containsLink && (
         <ReactTinyLink
@@ -124,7 +128,16 @@ const Message: React.FC<Props> = ({ message, loggedInUser, socket }) => {
           alt={imageUrl}
         />
       )}
-      <Text margin={10}>{message.content}</Text>
+      <Text
+        margin={10}
+        // color={
+        //   message.sender === loggedInUser
+        //     ? "#fff"
+        //     : defaultTheme.colors.text.dark
+        // }
+      >
+        {message.content}
+      </Text>
       {message.embededFile && showImageDialog && (
         <Lightbox
           onCloseRequest={() => setShowImageDialog(false)}
