@@ -50,35 +50,19 @@ const MessageView: React.FC<Props> = ({ socket, currentChatUser }: Props) => {
         localStorage.getItem("jwt"),
         currentChatUser.uuid
       );
-      res.data.data.messages.reverse();
       res.data.data.messages.sort((a: any, b: any) =>
         new Date(a.createdAt!).getTime() > new Date(b.createdAt!).getTime()
           ? -1
           : 1
       );
-      if (res.data.data.messages.length != messages.length) {
-        setMessages(res.data.data.messages);
-        sessionStorage.setItem(
-          currentChatUser.uuid,
-          JSON.stringify(res.data.data.messages)
-        );
-      }
-    } catch (error) {
+      } catch (error) {
       console.error(error);
     }
   }
 
   useEffect(() => {
-    if (sessionStorage.getItem(currentChatUser.uuid) != null) {
-      const savedMessages = sessionStorage.getItem(currentChatUser.uuid);
-      if (savedMessages != null) {
-        console.log("FOUND CACHED CHAT: " + currentChatUser.uuid);
-        setMessages(JSON.parse(savedMessages));
-      }
-      return;
-    }
-    setupSocketListeners();
     fetchChatMessages();
+    setupSocketListeners();
   }, [currentChatUser]);
 
   if (currentChatUser.uuid === "") {
