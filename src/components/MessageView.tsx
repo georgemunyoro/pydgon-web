@@ -55,6 +55,7 @@ const MessageView: React.FC<Props> = ({ socket, currentChatUser }: Props) => {
           ? -1
           : 1
       );
+      setMessages(res.data.data.messages);
       } catch (error) {
       console.error(error);
     }
