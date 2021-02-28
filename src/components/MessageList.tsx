@@ -1,16 +1,16 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from "react";
 
-import {Pane, Spinner, Badge} from 'evergreen-ui';
+import { Pane, Spinner, Badge } from "evergreen-ui";
 
-import InfiniteScroll from 'react-infinite-scroll-component';
+import InfiniteScroll from "react-infinite-scroll-component";
 
-import Message from './Message';
+import Message from "./Message";
 
-import {useSelector} from 'react-redux';
-import {RootState} from '../reducers';
+import { useSelector } from "react-redux";
+import { RootState } from "../reducers";
 
-import Api from '../api';
-import {UnsentMessage} from '../types/global';
+import Api from "../api";
+import { UnsentMessage } from "../types/global";
 
 interface Props {
   socket: SocketIOClient.Socket;
@@ -27,10 +27,23 @@ interface MessageModel {
   recepient?: string;
 }
 
-const MessageList: React.FC<Props> = ({socket, chat_uuid, messages}: Props) => {
+const MessageList: React.FC<Props> = ({
+  socket,
+  chat_uuid,
+  messages,
+}: Props) => {
   const loggedInUser = useSelector((state: RootState) => state.user);
 
-  const listRef = useRef<HTMLDivElement>(null);
+
+  const bottomOfMessageListRef = useRef<HTMLDivElement>(null);
+  const [messageListRef, setMessageListRef] = useState<Element>();
+
+  const setBottomOfMessageListRef = (e: Element) => {
+    if (e) {
+      e.scrollIntoView()
+    }
+    setMessageListRef(e)
+  }
 
   const [hasMore, setHasMore] = useState(true);
   const [messagesToRender, setMessagesToRender] = useState<MessageModel[]>([
@@ -38,15 +51,12 @@ const MessageList: React.FC<Props> = ({socket, chat_uuid, messages}: Props) => {
   ]);
 
   function emitUserOnline() {
-    socket.emit('user-online', loggedInUser);
+    socket.emit("user-online", loggedInUser);
   }
 
-  function updateScroll() {
-    if (listRef != null) {
-      if (listRef.current != null) {
-        listRef.current.scrollTop =
-          listRef.current?.scrollHeight - listRef.current?.clientHeight;
-      }
+  const scrollToBottom = () => {
+    if (messageListRef != null) {
+      if (messageListRef.scrollIntoView) messageListRef.scrollIntoView({ behavior: "smooth" });
     }
   }
 
@@ -54,13 +64,8 @@ const MessageList: React.FC<Props> = ({socket, chat_uuid, messages}: Props) => {
     const messagesAvailable = messages.length - messagesToRender.length;
     if (messagesAvailable > 25) {
       setMessagesToRender(messages.slice(0, messagesToRender.length + 24));
+      scrollToBottom();
 
-      if (listRef != null) {
-        if (listRef.current != null) {
-          listRef.current.scrollTop = listRef.current.scrollTop =
-            0.21 * listRef.current.scrollHeight;
-        }
-      }
     } else {
       setMessagesToRender(messages);
       setHasMore(false);
@@ -70,25 +75,25 @@ const MessageList: React.FC<Props> = ({socket, chat_uuid, messages}: Props) => {
   useEffect(() => {
     emitUserOnline();
     setMessagesToRender(messages);
-    updateScroll();
+    scrollToBottom()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chat_uuid, messages]);
 
   return (
     <Pane
-      ref={listRef}
       flexGrow={1}
       overflowX="hidden"
       overflowY="scroll"
-      id={'messageList'}>
+      id={"messageList"}
+    >
       <InfiniteScroll
         dataLength={messagesToRender.length}
         next={fetchMoreMessages}
         style={{
-          display: 'flex',
-          flexDirection: 'column-reverse',
+          display: "flex",
+          flexDirection: "column-reverse",
         }}
-        inverse={true}
+        // inverse={true}
         hasMore={hasMore}
         endMessage={
           <Pane width="100%" textAlign="center" padding={10}>
@@ -100,7 +105,9 @@ const MessageList: React.FC<Props> = ({socket, chat_uuid, messages}: Props) => {
             <Spinner margin="auto" />
           </Pane>
         }
-        scrollableTarget="messageList">
+        scrollableTarget="messageList"
+      >
+        <div id="bottomOfMessageList" ref={(e: any) => setBottomOfMessageListRef(e)}></div>
         {messagesToRender.map((message: any) => (
           <Message
             socket={socket}

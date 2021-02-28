@@ -90,7 +90,6 @@ export const App: React.FC = () => {
       setupSocketListeners(authenticatedUser);
     }
 
-    sessionStorage.clear();
     if (localStorage.getItem("jwt") !== null) {
       logUserIn();
       dispatch(setLoggedIn());
